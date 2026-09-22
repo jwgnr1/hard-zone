@@ -7,7 +7,7 @@ import jakarta.persistence.Persistence;
 public class JPAUtil {
 
     private static final EntityManagerFactory FACTORY =
-            Persistence.createEntityManagerFactory("hardzone-pu");
+            Persistence.createEntityManagerFactory("Projeto 1 BD2");
 
     public static EntityManager getEntityManager() {
         return FACTORY.createEntityManager();
