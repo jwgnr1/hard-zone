@@ -6,9 +6,8 @@ import jakarta.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 
-
 public class UsuarioRepository {
-    private EntityManager em = JPAUtil.getEntityManager();
+    private  final EntityManager em = JPAUtil.getEntityManager();
 
     public void salvar(Usuario usuario) {
         em.getTransaction().begin();
@@ -30,7 +29,6 @@ public class UsuarioRepository {
 
         return usuarios;
     }
-
 
     public Usuario buscarPorNome(String nome) {
         return em.createQuery("SELECT u FROM Usuario u WHERE u.nome = :nome",
@@ -73,6 +71,5 @@ public class UsuarioRepository {
         return usuario;
 
    }
-
 
 }
