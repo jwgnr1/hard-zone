@@ -9,9 +9,9 @@ public class Main {
 
         Usuario usuario = new Usuario();
 
-        usuario.setNome("João Silva");
+        usuario.setNome("Paulo Henrique");
         usuario.setDataNascimento(new Date());
-        usuario.setEmail("joao@email.com");
+        usuario.setEmail("paulonunes@email.com");
         usuario.setDataCadastro(new Date());
         usuario.setAtivo(true);
 
