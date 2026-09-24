@@ -11,27 +11,15 @@
 
         <properties>
 
-            <property name="jakarta.persistence.jdbc.driver"
-                      value="oracle.jdbc.OracleDriver"/>
+            <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
+            <property name="jakarta.persistence.jdbc.user" value="hardzone"/>
+            <property name="jakarta.persistence.jdbc.password" value="50869"/>
 
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
-
-            <property name="jakarta.persistence.jdbc.user"
-                      value="hardzone"/> // nome do banco
-
-            <property name="jakarta.persistence.jdbc.password"
-                      value="sua-senha"/>
-
-            <property name="hibernate.hbm2ddl.auto"
-                      value="update"/>
-
-            <property name="hibernate.show_sql"
-                      value="true"/>
-
-            <property name="hibernate.format_sql"
-                      value="true"/>
-
+            <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
 
     </persistence-unit>

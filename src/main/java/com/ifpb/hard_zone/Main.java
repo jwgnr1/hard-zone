@@ -1,3 +1,5 @@
+package com.ifpb.hard_zone;
+
 import com.ifpb.hard_zone.model.Usuario;
 import com.ifpb.hard_zone.repository.UsuarioRepository;
 
@@ -9,9 +11,9 @@ public class Main {
 
         Usuario usuario = new Usuario();
 
-        usuario.setNome("João Silva");
+        usuario.setNome("Paulo Henrique");
         usuario.setDataNascimento(new Date());
-        usuario.setEmail("joao@email.com");
+        usuario.setEmail("paulo@gmail.com");
         usuario.setDataCadastro(new Date());
         usuario.setAtivo(true);
 
