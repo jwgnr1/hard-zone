@@ -14,6 +14,7 @@ public class Main {
         usuario.setNome("Paulo Henrique");
         usuario.setDataNascimento(new Date());
         usuario.setEmail("paulo@gmail.com");
+        usuario.setEmail("paulonunes@email.com");
         usuario.setDataCadastro(new Date());
         usuario.setAtivo(true);
 

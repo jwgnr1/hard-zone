@@ -2,6 +2,7 @@ package com.ifpb.hard_zone.repository;
 import com.ifpb.hard_zone.model.Usuario;
 import com.ifpb.hard_zone.util.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 
 import java.util.Date;
 import java.util.List;
@@ -30,14 +31,19 @@ public class UsuarioRepository {
         return usuarios;
     }
 
-    public Usuario buscarPorNome(String nome) {
-        return em.createQuery("SELECT u FROM Usuario u WHERE u.nome = :nome",
-                        Usuario.class).setParameter("nome", nome).getSingleResult();
+    public List<Usuario> buscarPorNome(String nome) {
+        return em.createQuery(
+                "SELECT u FROM Usuario u WHERE u.nome = :nome",
+                Usuario.class).setParameter("nome", nome).getResultList();
     }
 
    public Usuario buscarPorEmail(String email) {
-        return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email"
-        ,Usuario.class).setParameter("email", email).getSingleResult();
+        try {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email"
+                    , Usuario.class).setParameter("email", email).getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
    }
 
    public List<Usuario> filtrarPeriodo(Date dataInicio, Date dataFim) {
@@ -63,8 +69,14 @@ public class UsuarioRepository {
 
     }
 
-   public Usuario remover(int id) {
-        Usuario usuario = em.find(Usuario.class,id);
+    public Usuario atualizar(Usuario usuario) {
+        em.getTransaction().begin();
+        Usuario usuarioAtualizado = em.merge(usuario);
+        em.getTransaction().commit();
+        return usuarioAtualizado;
+    }
+
+   public Usuario remover(Usuario usuario) {
         em.getTransaction().begin();
         em.remove(usuario);
         em.getTransaction().commit();
