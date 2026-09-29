@@ -1,8 +1,10 @@
 package com.ifpb.hard_zone.util;
 
-import com.ifpb.hard_zone.exception.DadosUsuarioInvalidoException;
-import com.ifpb.hard_zone.exception.Data.DataInvalidaException;
+import com.ifpb.hard_zone.exception.usuariosExceptions.DadosUsuarioInvalidoException;
+import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -59,6 +61,20 @@ public class Validator {
 
     private static boolean isEmailValido(String email) {
         return email != null && !email.isBlank() && PATTERN_EMAIL.matcher(email).matches();
+    }
+
+
+    public static Date criarDate(String data) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        return  sdf.parse(data);
+
+    }
+
+    public static Date criarDateTime(String data) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        sdf.setLenient(false);
+        return sdf.parse(data);
     }
 
 
