@@ -3,6 +3,7 @@ package com.ifpb.hard_zone.util;
 import com.ifpb.hard_zone.exception.DadosUsuarioInvalidoException;
 import com.ifpb.hard_zone.exception.Data.DataInvalidaException;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -61,5 +62,21 @@ public class Validator {
         return email != null && !email.isBlank() && PATTERN_EMAIL.matcher(email).matches();
     }
 
+    //Metodos de validação de data para OffSetDateTime
+    public static void validarPeriodo(OffsetDateTime dataInicio, OffsetDateTime dataFim) throws DataInvalidaException {
+        validarData(dataInicio);
+        validarData(dataFim);
+        if (dataInicio.isAfter(dataFim)) {
+            throw new DataInvalidaException("Data de início não pode ser posterior à data de fim.");
+        }
+    }
 
+    public static void validarData(OffsetDateTime data) throws DataInvalidaException {
+        if (data == null) {
+            throw new DataInvalidaException("Data informada não pode ser nula.");
+        }
+        if (data.isAfter(OffsetDateTime.now())) {
+            throw new DataInvalidaException("Data informada não pode estar no futuro.");
+        }
+    }
 }
