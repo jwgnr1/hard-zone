@@ -7,21 +7,15 @@ import jakarta.persistence.NoResultException;
 import java.util.Date;
 import java.util.List;
 
-public class UsuarioRepository {
+public class UsuarioRepository extends RepositoryBase<Usuario, Long>{
     private  final EntityManager em = JPAUtil.getEntityManager();
 
-    public void salvar(Usuario usuario) {
-        em.getTransaction().begin();
-        em.persist(usuario);
-        em.getTransaction().commit();
+    public UsuarioRepository(){
+        super(Usuario.class);
     }
 
     public Usuario buscarPorId(int id) {
         return em.find(Usuario.class,id);
-    }
-
-    public List<Usuario> buscarTodos() {
-        return em.createQuery("select u from Usuario u", Usuario.class).getResultList();
     }
 
     public List<Usuario> filtrarPorNome(String nome) {
@@ -68,20 +62,4 @@ public class UsuarioRepository {
                 .getResultList();
 
     }
-
-    public Usuario atualizar(Usuario usuario) {
-        em.getTransaction().begin();
-        Usuario usuarioAtualizado = em.merge(usuario);
-        em.getTransaction().commit();
-        return usuarioAtualizado;
-    }
-
-   public Usuario remover(Usuario usuario) {
-        em.getTransaction().begin();
-        em.remove(usuario);
-        em.getTransaction().commit();
-        return usuario;
-
-   }
-
 }
