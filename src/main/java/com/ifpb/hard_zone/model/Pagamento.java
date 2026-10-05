@@ -22,7 +22,7 @@ public class Pagamento {
     @Column(nullable = false)
     private OffsetDateTime dataHora;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
@@ -46,10 +46,6 @@ public class Pagamento {
 
     public Sessao getSessao() {
         return sessao;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setValor(BigDecimal valor) {

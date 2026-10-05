@@ -26,7 +26,7 @@ public class PagamentoRepository extends RepositoryBase<Pagamento, Long>{
 
     @Override
     public List<Pagamento> filtrarPorperiodo(OffsetDateTime dataInicio, OffsetDateTime dataFim) {
-        List pagamentos = em.createQuery("SELECT p FROM Pagamentos p WHERE p.datahora BETWEEN :dataInicio AND :dataFim",
+        List<Pagamento> pagamentos = em.createQuery("SELECT p FROM Pagamento p WHERE p.dataHora BETWEEN :dataInicio AND :dataFim",
                         Pagamento.class)
                 .setParameter("dataInicio", dataInicio)
                 .setParameter("dataFim", dataFim)
@@ -35,7 +35,7 @@ public class PagamentoRepository extends RepositoryBase<Pagamento, Long>{
     }
 
     public BigDecimal faturamnetoPorPeriodo(OffsetDateTime dataInicio, OffsetDateTime dataFim) {
-        return em.createQuery("SELECT COALESCE(SUM(p.valor), 0)FROM Pagamentos p WHERE p.datahora BETWEEN :dataInicio AND :dataFim",
+        return em.createQuery("SELECT COALESCE(SUM(p.valor), 0) FROM Pagamento p WHERE p.dataHora BETWEEN :dataInicio AND :dataFim",
                     BigDecimal.class)
                 .setParameter("dataInicio", dataInicio)
                 .setParameter("dataFim", dataFim)
@@ -43,9 +43,10 @@ public class PagamentoRepository extends RepositoryBase<Pagamento, Long>{
     }
 
     public Optional<Pagamento> pagamentoComMaiorValor(){
-        return Optional.ofNullable(em.createQuery("SELECT p FROM Pagamento p ORDER BY p.valor DESC",
+        return em.createQuery("SELECT p FROM Pagamento p ORDER BY p.valor DESC",
                         Pagamento.class)
                 .setMaxResults(1)
-                .getSingleResult());
+                .getResultStream()
+                .findFirst();
     }
 }

@@ -10,7 +10,7 @@
             <!-- Conexão com o Oracle -->
             <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
-            <property name="jakarta.persistence.jdbc.user" value="hardzone"/>
+            <property name="jakarta.persistence.jdbc.user" value="HARDZONE_DEV"/>
             <property name="jakarta.persistence.jdbc.password" value="hardzone123"/>
 
             <!--Configurações Hibernate -->
@@ -19,7 +19,7 @@
             <property name="hibernate.format_sql" value="true"/>
 
             <!-- Cria/Atualiza as tabelas automaticamente de acordo com as @Entity -->
-            <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
         </properties>
     </persistence-unit>
 </persistence>
