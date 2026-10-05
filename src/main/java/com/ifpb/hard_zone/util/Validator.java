@@ -3,6 +3,7 @@ package com.ifpb.hard_zone.util;
 import com.ifpb.hard_zone.exception.usuariosExceptions.DadosUsuarioInvalidoException;
 import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,9 +23,9 @@ public class Validator {
         if (data == null) {
             throw new DataInvalidaException("Data informada não pode ser nula.");
         }
-        if (data.after(new Date())) {
+        /*if (data.after(new Date())) {
             throw new DataInvalidaException("Data informada não pode estar no futuro.");
-        }
+        }*/
     }
 
     public static void validarDataNascimento(Date data) throws DadosUsuarioInvalidoException {
@@ -124,6 +125,12 @@ public class Validator {
         sdf.setLenient(false);
         return sdf.parse(data);
     }
+
+    public static boolean isValorValido(BigDecimal valor){
+        return valor.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+
 
 
 }
