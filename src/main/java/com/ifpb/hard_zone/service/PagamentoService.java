@@ -1,6 +1,6 @@
 package com.ifpb.hard_zone.service;
 
-import com.ifpb.hard_zone.exception.Data.DataInvalidaException;
+import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 import com.ifpb.hard_zone.exception.Pagamento.*;
 import com.ifpb.hard_zone.model.Pagamento;
 import com.ifpb.hard_zone.repository.PagamentoRepository;

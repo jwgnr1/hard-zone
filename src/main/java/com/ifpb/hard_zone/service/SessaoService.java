@@ -44,7 +44,7 @@ public class SessaoService {
     }
 
     public List<Sessao> listarSessoes() {
-        return repository.buscarTodos();
+        return repository.listarTodos();
     }
 
     public List<Sessao> buscarSessoesAtivas() {

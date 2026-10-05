@@ -5,6 +5,7 @@ import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -42,6 +43,15 @@ public class Validator {
         }
     }
 
+    public static void validarPeriodo(OffsetDateTime dataInicio, OffsetDateTime dataFim)
+            throws DataInvalidaException {
+        validarPeriodo(paraDate(dataInicio), paraDate(dataFim));
+    }
+
+    private static Date paraDate(OffsetDateTime data) {
+        return data == null ? null : Date.from(data.toInstant());
+    }
+
     public static void validarNome(String nome) throws DadosUsuarioInvalidoException {
         if(!isNomeValido(nome)) {
             throw new DadosUsuarioInvalidoException("Nome do usuario está invalido digite apenas letras.");
@@ -63,14 +73,6 @@ public class Validator {
         return email != null && !email.isBlank() && PATTERN_EMAIL.matcher(email).matches();
     }
 
-    //Metodos de validação de data para OffSetDateTime
-    public static void validarPeriodo(OffsetDateTime dataInicio, OffsetDateTime dataFim) throws DataInvalidaException {
-        validarData(dataInicio);
-        validarData(dataFim);
-        if (dataInicio.isAfter(dataFim)) {
-            throw new DataInvalidaException("Data de início não pode ser posterior à data de fim.");
-        }
-    }
 
     public static Date criarDate(String data) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
