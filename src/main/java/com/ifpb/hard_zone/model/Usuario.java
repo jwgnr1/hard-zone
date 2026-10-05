@@ -7,7 +7,11 @@ import java.util.Date;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
+    @SequenceGenerator(
+            name = "usuario_seq",
+            sequenceName = "usuario_seq",
+            allocationSize = 1, initialValue = 1)
     private Long id;
 
     @Column(nullable = false)
