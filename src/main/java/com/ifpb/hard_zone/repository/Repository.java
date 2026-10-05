@@ -1,13 +1,8 @@
 package com.ifpb.hard_zone.repository;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-/*
-Interface utilizada para unificar metodos em comum nos Repositories,
-a fim de evitar duplicidade de código.
-*/
 
 public interface Repository<T, ID> {
 
@@ -21,5 +16,4 @@ public interface Repository<T, ID> {
 
     List<T> buscarTodos();
 
-    List<T> filtrarPorperiodo(OffsetDateTime dataInicio, OffsetDateTime dataFim);
 }

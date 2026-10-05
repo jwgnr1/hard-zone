@@ -24,7 +24,6 @@ public class PagamentoRepository extends RepositoryBase<Pagamento, Long>{
                 .findFirst();
     }
 
-    @Override
     public List<Pagamento> filtrarPorperiodo(OffsetDateTime dataInicio, OffsetDateTime dataFim) {
         List<Pagamento> pagamentos = em.createQuery("SELECT p FROM Pagamento p WHERE p.dataHora BETWEEN :dataInicio AND :dataFim",
                         Pagamento.class)
