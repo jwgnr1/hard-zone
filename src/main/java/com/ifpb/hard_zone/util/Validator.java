@@ -30,22 +30,22 @@ public class Validator {
     public static void validarDataNascimento(Date data) throws DadosUsuarioInvalidoException {
         try {
             validarData(data);
-        }catch (DataInvalidaException e) {
-            throw new DadosUsuarioInvalidoException("Data de nascimento inválida: " + e.getMessage());
+        } catch (DataInvalidaException e) {
+            throw new DadosUsuarioInvalidoException(
+                    "Data de nascimento inválida: " + e.getMessage());
         }
+        int idade = gerarIdade(data);
 
-        int idade = obterAno(new Date()) - obterAno(data);
 
-        if(idade < IDADE_MINIMA) {
-            throw new DadosUsuarioInvalidoException("Data de nascimento inválida: idade mínima permitida é " + IDADE_MINIMA + " anos.");
 
-        }
-
-        if(idade > IDADE_MAXIMA) {
-            throw new DadosUsuarioInvalidoException("Data de nascimento inválida: idade maxima permitida é " + IDADE_MAXIMA + " anos.");
+        if (idade < IDADE_MINIMA) {
+            throw new DadosUsuarioInvalidoException(String.format("Data de nascimento inválida: idade mínima permitida é %d anos.", IDADE_MINIMA));
 
         }
 
+        if (idade > IDADE_MAXIMA) {
+            throw new DadosUsuarioInvalidoException(String.format("Data de nascimento inválida: idade máxima permitida é %d  anos.", IDADE_MAXIMA));
+        }
     }
 
 
@@ -80,6 +80,27 @@ public class Validator {
         Calendar calendario =  Calendar.getInstance();
         calendario.setTime(data);
         return calendario.get(calendario.YEAR);
+    }
+
+    private static int obterDiaDoAno(Date data) {
+        Calendar calendario =  Calendar.getInstance();
+        calendario.setTime(data);
+        return calendario.get(calendario.DAY_OF_YEAR);
+    }
+
+    private static int gerarIdade(Date dataNascimento) {
+
+        Date dataAtual = new Date();
+        int anoAtual = obterAno(dataAtual);
+        int anoNascimento = obterAno(dataNascimento);
+
+        int idade = anoAtual - anoNascimento;
+
+        if (obterDiaDoAno(dataAtual) < obterDiaDoAno(dataNascimento)) {
+            idade--;
+        }
+
+        return idade;
     }
 
     private static boolean isEmailValido(String email) {

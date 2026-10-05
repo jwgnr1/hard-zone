@@ -8,191 +8,296 @@ import java.util.Scanner;
 
 public class Main {
 
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final UsuarioController usuarioController = new UsuarioController();
+
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        UsuarioController controller = new UsuarioController();
-
-        int opcao;
+        String opcao;
 
         do {
-            System.out.println("\n========== HARD ZONE ==========");
-            System.out.println("1 - Cadastrar usuário");
-            System.out.println("2 - Buscar usuário por ID");
-            System.out.println("3 - Atualizar usuário");
-            System.out.println("4 - Desativar usuário");
-            System.out.println("5 - Ativar usuário");
-            System.out.println("6 - Buscar usuário por nome");
-            System.out.println("7 - Buscar usuário por e-mail");
-            System.out.println("8 - Listar todos os usuários");
-            System.out.println("9 - Listar usuários ativos");
-            System.out.println("10 - Listar usuários desativados");
-            System.out.println("11 - Listar por data de cadastro");
-            System.out.println("12 - Filtrar por nome");
-            System.out.println("13 - Filtrar por período");
-            System.out.println("14 - Excluir permanentemente");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
-
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            exibirMenu();
+            opcao = scanner.nextLine();
 
             switch (opcao) {
 
-                case 1:
-                    System.out.print("Nome: ");
-                    String nome = scanner.nextLine();
-
-                    System.out.print("Data de nascimento (dd/MM/yyyy): ");
-                    String dataNascimento = scanner.nextLine();
-
-                    System.out.print("E-mail: ");
-                    String email = scanner.nextLine();
-
-                    controller.cadastrarUsuario(
-                            nome,
-                            dataNascimento,
-                            email
-                    );
+                case "1":
+                    cadastrarUsuario();
                     break;
 
-                case 2:
-                    System.out.print("ID: ");
-                    String id = scanner.nextLine();
-
-                    Usuario usuario = controller.buscarUsuarioPorId(id);
-
-                    if (usuario != null) {
-                        System.out.println("ID: " + usuario.getId());
-                        System.out.println("Nome: " + usuario.getNome());
-                        System.out.println("E-mail: " + usuario.getEmail());
-                        System.out.println("Ativo: " + usuario.isAtivo());
-                    }
+                case "2":
+                    buscarUsuarioPorId();
                     break;
 
-                case 3:
-                    System.out.print("ID: ");
-                    String idAtualizar = scanner.nextLine();
-
-                    System.out.print("Novo nome: ");
-                    String novoNome = scanner.nextLine();
-
-                    System.out.print("Novo e-mail: ");
-                    String novoEmail = scanner.nextLine();
-
-                    controller.atualizarDadosUsuario(
-                            idAtualizar,
-                            novoNome,
-                            novoEmail
-                    );
+                case "3":
+                    atualizarUsuario();
                     break;
 
-                case 4:
-                    System.out.print("ID: ");
-                    String idDesativar = scanner.nextLine();
-
-                    controller.desativarUsuario(idDesativar);
+                case "4":
+                    buscarUsuarioPorNome();
                     break;
 
-                case 5:
-                    System.out.print("ID: ");
-                    String idAtivar = scanner.nextLine();
-
-                    controller.ativarUsuario(idAtivar);
+                case "5":
+                    buscarUsuarioPorEmail();
                     break;
 
-                case 6:
-                    System.out.print("Nome: ");
-                    String nomeBusca = scanner.nextLine();
-
-                    List<Usuario> usuariosNome =
-                            controller.buscarUsuarioPorNome(nomeBusca);
-
-                    exibirUsuarios(usuariosNome);
+                case "6":
+                    listarTodosUsuarios();
                     break;
 
-                case 7:
-                    System.out.print("E-mail: ");
-                    String emailBusca = scanner.nextLine();
-
-                    Usuario usuarioEmail =
-                            controller.buscarUsuarioPorEmail(emailBusca);
-
-                    if (usuarioEmail != null) {
-                        System.out.println("ID: " + usuarioEmail.getId());
-                        System.out.println("Nome: " + usuarioEmail.getNome());
-                        System.out.println("E-mail: " + usuarioEmail.getEmail());
-                        System.out.println("Ativo: " + usuarioEmail.isAtivo());
-                    }
+                case "7":
+                    filtrarUsuariosPorNome();
                     break;
 
-                case 8:
-                    exibirUsuarios(controller.listarTodosUsuarios());
+                case "8":
+                    filtrarUsuariosPorPeriodo();
                     break;
 
-                case 9:
-                    exibirUsuarios(controller.listarTodosUsuariosAtivos());
+                case "9":
+                    listarUsuarioPorDataCadastro();
                     break;
 
-                case 10:
-                    exibirUsuarios(controller.listarTodosUsuariosDesativados());
+                case "10":
+                    listarUsuariosAtivos();
                     break;
 
-                case 11:
-                    System.out.print("Data de cadastro (dd/MM/yyyy): ");
-                    String data = scanner.nextLine();
-
-                    exibirUsuarios(
-                            controller.listarUsuariosPorDataCadastro(data)
-                    );
+                case "11":
+                    listarUsuariosDesativados();
                     break;
 
-                case 12:
-                    System.out.print("Nome para filtrar: ");
-                    String nomeFiltro = scanner.nextLine();
-
-                    exibirUsuarios(
-                            controller.filtrarPorNomeUsuario(nomeFiltro)
-                    );
+                case "12":
+                    desativarUsuario();
                     break;
 
-                case 13:
-                    System.out.print("Data inicial (dd/MM/yyyy): ");
-                    String inicio = scanner.nextLine();
-
-                    System.out.print("Data final (dd/MM/yyyy): ");
-                    String fim = scanner.nextLine();
-
-                    exibirUsuarios(
-                            controller.filtrarUsuariosPorPeriodo(inicio, fim)
-                    );
+                case "13":
+                    ativarUsuario();
                     break;
 
-                case 14:
-                    System.out.print("ID: ");
-                    String idExcluir = scanner.nextLine();
-
-                    Usuario excluido =
-                            controller.excluirUsuarioPermanente(idExcluir);
-
-                    if (excluido != null) {
-                        System.out.println(
-                                "Usuário excluído: " + excluido.getNome()
-                        );
-                    }
+                case "14":
+                    excluirUsuario();
                     break;
 
-                case 0:
-                    System.out.println("Encerrando...");
+                case "0":
+                    System.out.println("Saindo do sistema...");
                     break;
 
                 default:
                     System.out.println("Opção inválida.");
             }
 
-        } while (opcao != 0);
+            if (!opcao.equals("0")) {
+                System.out.println("\nPressione ENTER para continuar...");
+                scanner.nextLine();
+            }
+
+        } while (!opcao.equals("0"));
 
         scanner.close();
+    }
+
+    private static void exibirMenu() {
+        System.out.println("\n========================================");
+        System.out.println("          SISTEMA DE USUÁRIOS");
+        System.out.println("========================================");
+        System.out.println("1  - Cadastrar usuário");
+        System.out.println("2  - Buscar usuário por ID");
+        System.out.println("3  - Atualizar usuário");
+        System.out.println("4  - Buscar usuário por nome");
+        System.out.println("5  - Buscar usuário por email");
+        System.out.println("6  - Listar todos os usuários");
+        System.out.println("7  - Filtrar usuários por nome");
+        System.out.println("8  - Filtrar usuários por período");
+        System.out.println("9  - Buscar por data de cadastro");
+        System.out.println("10 - Listar usuários ativos");
+        System.out.println("11 - Listar usuários desativados");
+        System.out.println("12 - Desativar usuário");
+        System.out.println("13 - Ativar usuário");
+        System.out.println("14 - Excluir usuário permanentemente");
+        System.out.println("0  - Sair");
+        System.out.println("========================================");
+        System.out.print("Escolha uma opção: ");
+    }
+
+    private static void cadastrarUsuario() {
+
+        System.out.println("\n--- CADASTRAR USUÁRIO ---");
+
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+
+        System.out.print("Data de nascimento (dd/MM/yyyy): ");
+        String dataNascimento = scanner.nextLine();
+
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+
+        usuarioController.cadastrarUsuario(nome, dataNascimento, email);
+    }
+
+    private static void buscarUsuarioPorId() {
+
+        System.out.println("\n--- BUSCAR USUÁRIO POR ID ---");
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine();
+
+        Usuario usuario = usuarioController.buscarUsuarioPorId(id);
+
+        if (usuario != null) {
+            exibirUsuario(usuario);
+        }
+    }
+
+    private static void atualizarUsuario() {
+
+        System.out.println("\n--- ATUALIZAR USUÁRIO ---");
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine();
+
+        System.out.print("Novo nome: ");
+        String nome = scanner.nextLine();
+
+        System.out.print("Novo email: ");
+        String email = scanner.nextLine();
+
+        usuarioController.atualizarDadosUsuario(id, nome, email);
+    }
+
+    private static void buscarUsuarioPorNome() {
+
+        System.out.println("\n--- BUSCAR USUÁRIO POR NOME ---");
+
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+
+        List<Usuario> usuarios =
+                usuarioController.buscarUsuarioPorNome(nome);
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void buscarUsuarioPorEmail() {
+
+        System.out.println("\n--- BUSCAR USUÁRIO POR EMAIL ---");
+
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+
+        Usuario usuario =
+                usuarioController.buscarUsuarioPorEmail(email);
+
+        if (usuario != null) {
+            exibirUsuario(usuario);
+        }
+    }
+
+    private static void listarTodosUsuarios() {
+
+        System.out.println("\n--- TODOS OS USUÁRIOS ---");
+
+        List<Usuario> usuarios =
+                usuarioController.listarTodosUsuarios();
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void filtrarUsuariosPorNome() {
+
+        System.out.println("\n--- FILTRAR USUÁRIOS POR NOME ---");
+
+        System.out.print("Nome ou parte do nome: ");
+        String nome = scanner.nextLine();
+
+        List<Usuario> usuarios =
+                usuarioController.filtrarPorNomeUsuario(nome);
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void filtrarUsuariosPorPeriodo() {
+
+        System.out.println("\n--- FILTRAR POR PERÍODO ---");
+
+        System.out.print("Data inicial (dd/MM/yyyy HH:mm:ss): ");
+        String inicio = scanner.nextLine();
+
+        System.out.print("Data final (dd/MM/yyyy HH:mm:ss): ");
+        String fim = scanner.nextLine();
+
+        List<Usuario> usuarios =
+                usuarioController.filtrarUsuariosPorPeriodo(inicio, fim);
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void listarUsuarioPorDataCadastro() {
+
+        System.out.println("\n--- BUSCAR POR DATA DE CADASTRO ---");
+
+        System.out.print("Data (dd/MM/yyyy HH:mm:ss): ");
+        String data = scanner.nextLine();
+
+        List<Usuario> usuarios =
+                usuarioController.listarUsuariosPorDataCadastro(data);
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void listarUsuariosAtivos() {
+
+        System.out.println("\n--- USUÁRIOS ATIVOS ---");
+
+        List<Usuario> usuarios =
+                usuarioController.listarTodosUsuariosAtivos();
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void listarUsuariosDesativados() {
+
+        System.out.println("\n--- USUÁRIOS DESATIVADOS ---");
+
+        List<Usuario> usuarios =
+                usuarioController.listarTodosUsuariosDesativados();
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void desativarUsuario() {
+
+        System.out.println("\n--- DESATIVAR USUÁRIO ---");
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine();
+
+        usuarioController.desativarUsuario(id);
+    }
+
+    private static void ativarUsuario() {
+
+        System.out.println("\n--- ATIVAR USUÁRIO ---");
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine();
+
+        usuarioController.ativarUsuario(id);
+    }
+
+    private static void excluirUsuario() {
+
+        System.out.println("\n--- EXCLUIR USUÁRIO PERMANENTEMENTE ---");
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine();
+
+        Usuario usuario =
+                usuarioController.excluirUsuarioPermanente(id);
+
+        if (usuario != null) {
+            System.out.println("Usuário removido:");
+            exibirUsuario(usuario);
+        }
     }
 
     private static void exibirUsuarios(List<Usuario> usuarios) {
@@ -202,15 +307,21 @@ public class Main {
             return;
         }
 
-        System.out.println("\n========== USUÁRIOS ==========");
+        System.out.println("\nQuantidade encontrada: " + usuarios.size());
 
         for (Usuario usuario : usuarios) {
-            System.out.println(
-                    "ID: " + usuario.getId()
-                            + " | Nome: " + usuario.getNome()
-                            + " | E-mail: " + usuario.getEmail()
-                            + " | Ativo: " + usuario.isAtivo()
-            );
+            exibirUsuario(usuario);
+            System.out.println("----------------------------------------");
         }
+    }
+
+    private static void exibirUsuario(Usuario usuario) {
+
+        System.out.println("\nID: " + usuario.getId());
+        System.out.println("Nome: " + usuario.getNome());
+        System.out.println("Data de nascimento: " + usuario.getDataNascimento());
+        System.out.println("Email: " + usuario.getEmail());
+        System.out.println("Data de cadastro: " + usuario.getDataCadastro());
+        System.out.println("Ativo: " + usuario.isAtivo());
     }
 }
