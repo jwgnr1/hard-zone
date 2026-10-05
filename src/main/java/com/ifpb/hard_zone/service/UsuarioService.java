@@ -57,10 +57,8 @@ public class UsuarioService {
 
         Optional<Usuario> usuario = usuarioRepository.buscarPorId(id);
 
-        if (usuario.isEmpty()) {throw new UsuarioNaoEncontradoException(String.format("Usuário não encontrado com o ID: %s.", id));
-        }
 
-        return usuario.get();
+        return usuario.orElseThrow(() -> new UsuarioNaoEncontradoException(String.format("Usuário não encontrado com o ID: %s.", id)));
     }
 
     public void desativarUsuario(Long id) throws UsuarioNaoEncontradoException, UsuarioStatusInvalidoException {
