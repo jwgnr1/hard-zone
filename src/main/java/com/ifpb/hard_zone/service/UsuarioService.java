@@ -84,7 +84,8 @@ public class UsuarioService {
 
     public Usuario buscarUsuarioPorEmail(String email) throws UsuarioNaoEncontradoException, DadosUsuarioInvalidoException {
         Validator.validarEmail(email);
-        Usuario usuario = usuarioRepository.buscarPorEmail(email);
+        String emailNormalizado = email.trim().toLowerCase();
+        Usuario usuario = usuarioRepository.buscarPorEmail(emailNormalizado);
 
         if (usuario == null) {
             throw new UsuarioNaoEncontradoException(String.format("Nenhum usuario encontrado com esse email: %s no banco de dados" , email));
@@ -104,7 +105,7 @@ public class UsuarioService {
 
     }
 
-    public List<Usuario> filtrarUsuariosPorDataCadastro(String inicio, String fim) throws DataInvalidaException,ParseException {
+    public List<Usuario> filtrarUsuariosPorPeriodo(String inicio, String fim) throws DataInvalidaException,ParseException {
         Date dataInicio =Validator.criarDateTime(inicio);
         Date dataFim = Validator.criarDateTime(fim);
         Validator.validarPeriodo(dataInicio, dataFim);
@@ -137,12 +138,13 @@ public class UsuarioService {
 
     private Usuario criarUsuario(String nome, String dataNascimento, String email) throws DadosUsuarioInvalidoException, ParseException {
         Date dataNascimentoFormatada = Validator.criarDate(dataNascimento);
-        validarDadosUsuario(nome, dataNascimentoFormatada , email);
+        String emailNormalizado = email.trim().toLowerCase();
+        validarDadosUsuario(nome, dataNascimentoFormatada , emailNormalizado);
 
         Usuario usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setDataNascimento(dataNascimentoFormatada);
-        usuario.setEmail(email);
+        usuario.setEmail(emailNormalizado);
         usuario.setDataCadastro(new Date());
         usuario.setAtivo(true);
 

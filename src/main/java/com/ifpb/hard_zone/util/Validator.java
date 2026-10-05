@@ -5,6 +5,7 @@ import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -14,7 +15,8 @@ public class Validator {
     private static final Pattern PATTERN_EMAIL = Pattern.compile("^[a-zA-Z0-9+_.-]+@[A-Za-z0-9.-]+" +
             "\\.[A-Za-z]{2,}$");
 
-
+    private static final int IDADE_MINIMA = 10;
+    private static final int IDADE_MAXIMA = 80;
 
     public static void validarData(Date data) throws DataInvalidaException {
         if (data == null) {
@@ -31,6 +33,19 @@ public class Validator {
         }catch (DataInvalidaException e) {
             throw new DadosUsuarioInvalidoException("Data de nascimento inválida: " + e.getMessage());
         }
+
+        int idade = obterAno(new Date()) - obterAno(data);
+
+        if(idade < IDADE_MINIMA) {
+            throw new DadosUsuarioInvalidoException("Data de nascimento inválida: idade mínima permitida é " + IDADE_MINIMA + " anos.");
+
+        }
+
+        if(idade > IDADE_MAXIMA) {
+            throw new DadosUsuarioInvalidoException("Data de nascimento inválida: idade maxima permitida é " + IDADE_MAXIMA + " anos.");
+
+        }
+
     }
 
 
@@ -43,24 +58,36 @@ public class Validator {
     }
 
     public static void validarNome(String nome) throws DadosUsuarioInvalidoException {
+        if(nome == null || nome.isBlank()) {
+            throw new DadosUsuarioInvalidoException("Nome não pode ser vazio.");
+        }
+
         if(!isNomeValido(nome)) {
-            throw new DadosUsuarioInvalidoException("Nome do usuario está invalido digite apenas letras.");
+            throw new DadosUsuarioInvalidoException("Nome inválido. Use apenas letras e espaços.");
         }
     }
 
     public static void validarEmail(String email) throws DadosUsuarioInvalidoException {
-        if(!isEmailValido(email)) {
-            throw new DadosUsuarioInvalidoException("Email do usuario invalido, email não está no padrão de email.");
+        if (email == null || email.isBlank()) {
+            throw new DadosUsuarioInvalidoException("E-mail não pode ser vazio.");
+        }
+        if (!isEmailValido(email)) {
+            throw new DadosUsuarioInvalidoException("E-mail inválido. Use o formato nome@dominio.com.");
         }
     }
 
-    private static boolean isNomeValido(String nome) {
-        return nome != null && !nome.isBlank() && PATTERN_NOME.matcher(nome).matches();
+    private static int obterAno(Date data) {
+        Calendar calendario =  Calendar.getInstance();
+        calendario.setTime(data);
+        return calendario.get(calendario.YEAR);
     }
 
-
     private static boolean isEmailValido(String email) {
-        return email != null && !email.isBlank() && PATTERN_EMAIL.matcher(email).matches();
+        return PATTERN_EMAIL.matcher(email).matches();
+    }
+
+    private static boolean isNomeValido(String nome) {
+        return PATTERN_NOME.matcher(nome).matches();
     }
 
 
