@@ -2,7 +2,6 @@ package com.ifpb.hard_zone.model;
 
 import com.ifpb.hard_zone.util.enumerate.StatusComputador;
 import jakarta.persistence.*;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,12 @@ public class Computador {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "computadores_seq_gen")
+    @SequenceGenerator(
+            name = "computadores_seq_gen",
+            sequenceName = "computadores_SEQ",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(nullable = false)
@@ -23,7 +27,7 @@ public class Computador {
     private Integer numeroMaquina;
 
     @Enumerated(EnumType.STRING)
-    private StatusComputador Computador;
+    private StatusComputador status;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -33,7 +37,7 @@ public class Computador {
     )
     private List<Jogo> jogos = new ArrayList<>();
 
-    public void adiconarJogo(Jogo jogo) {
+    public void adicionarJogo(Jogo jogo) {
         if (jogo != null && !this.jogos.contains(jogo)) {
             this.jogos.add(jogo);
             jogo.getComputadores().add(this);
@@ -67,12 +71,12 @@ public class Computador {
         this.numeroMaquina = numeroMaquina;
     }
 
-    public StatusComputador getComputador() {
-        return Computador;
+    public StatusComputador getStatus() {
+        return status;
     }
 
-    public void setComputador(StatusComputador computador) {
-        Computador = computador;
+    public void setStatus(StatusComputador statusComputador) {
+        status = statusComputador;
     }
 
     public List<Jogo> getJogos() {

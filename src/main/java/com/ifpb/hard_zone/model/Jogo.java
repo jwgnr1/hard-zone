@@ -10,7 +10,12 @@ import java.util.List;
 public class Jogo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jogos_seq_gen")
+    @SequenceGenerator(
+            name = "jogos_seq_gen",
+            sequenceName = "jogos_SEQ",
+            allocationSize = 1
+    )
     private Long id;
 
     @Column(nullable = false)
