@@ -1,5 +1,6 @@
 package com.ifpb.hard_zone.repository;
 
+import com.ifpb.hard_zone.interfaces.Repository;
 import com.ifpb.hard_zone.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -69,7 +70,7 @@ public abstract class RepositoryBase<T, ID> implements Repository<T, ID> {
     }
 
     @Override
-    public List<T> buscarTodos() {
+    public List<T> listarTodos() {
         return consultar(em -> em.createQuery(
                         "SELECT t FROM " + entidade.getSimpleName() + " t", entidade)
                 .getResultList());

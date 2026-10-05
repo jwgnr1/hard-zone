@@ -3,14 +3,12 @@ package com.ifpb.hard_zone.service;
 import com.ifpb.hard_zone.exception.Data.DataInvalidaException;
 import com.ifpb.hard_zone.exception.Pagamento.*;
 import com.ifpb.hard_zone.model.Pagamento;
-import com.ifpb.hard_zone.model.Sessao;
 import com.ifpb.hard_zone.repository.PagamentoRepository;
 import com.ifpb.hard_zone.util.Validator;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public class PagamentoService {
 
@@ -28,7 +26,7 @@ public class PagamentoService {
     }
 
     public List<Pagamento> listarPagamentos(){
-        List<Pagamento> listaPagamentos = repository.buscarTodos();
+        List<Pagamento> listaPagamentos = repository.listarTodos();
 
         if(listaPagamentos.isEmpty()){
             throw new NenhumPagamentoRegistradoException("Nenhum pagamento registrado");

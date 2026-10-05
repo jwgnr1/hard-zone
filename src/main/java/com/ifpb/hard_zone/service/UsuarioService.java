@@ -68,7 +68,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> listarTodosUsuarios() {
-        return usuarioRepository.buscarTodos();
+        return usuarioRepository.listarTodos();
 
     }
 
