@@ -1,40 +1,21 @@
 package com.ifpb.hard_zone;
 
-import com.ifpb.hard_zone.model.Computador;
-import com.ifpb.hard_zone.model.Jogo;
-import com.ifpb.hard_zone.model.Usuario;
+import com.ifpb.hard_zone.controller.PagamentoController;
+import com.ifpb.hard_zone.model.Pagamento;
+import com.ifpb.hard_zone.model.Sessao;
+import com.ifpb.hard_zone.repository.SessaoRepository;
 import com.ifpb.hard_zone.service.SessaoService;
-import com.ifpb.hard_zone.util.JPAUtil;
-
-import jakarta.persistence.EntityManager;
+import com.ifpb.hard_zone.util.CodigoPagamento;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        EntityManager em = JPAUtil.getEntityManager();
-
-        try {
-
-            Usuario usuario = em.find(Usuario.class, 1L);
-            Computador computador = em.find(Computador.class, 1L);
-            Jogo jogo = em.find(Jogo.class, 1L);
-
-            SessaoService service = new SessaoService();
-
-            service.iniciarSessao(
-                    usuario,
-                    computador,
-                    jogo,
-                    new BigDecimal("10.00")
-            );
-
-            System.out.println("Sessão criada com sucesso!");
-
-        } finally {
-            em.close();
-        }
     }
 }

@@ -14,9 +14,9 @@ public class PagamentoService {
 
     private final PagamentoRepository repository = new PagamentoRepository();
 
-    public void salvarPagamento(BigDecimal valor, String codigoPagamento, OffsetDateTime dataHora){
-        Pagamento pagamento = criarPagamento(valor,codigoPagamento,dataHora);
+    public Pagamento salvarPagamento(Pagamento pagamento){
         repository.salvar(pagamento);
+        return pagamento;
     }
 
 
@@ -64,12 +64,4 @@ public class PagamentoService {
                 .orElseThrow(()-> new PagamentoNaoEncontradoException("Nenhuma sessão registrada"));
     }
 
-    public Pagamento criarPagamento(BigDecimal valor, String codigoPagamento, OffsetDateTime dataHora){
-
-        Pagamento pagamento = new Pagamento();
-        pagamento.setValor(valor);
-        pagamento.setCodigoPagamento(codigoPagamento);
-        pagamento.setDataHora(dataHora);
-        return pagamento;
-    }
 }

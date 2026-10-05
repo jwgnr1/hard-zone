@@ -1,5 +1,6 @@
 package com.ifpb.hard_zone.model;
 
+import com.ifpb.hard_zone.util.CodigoPagamento;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -16,8 +17,10 @@ public class Pagamento {
     @Column(nullable = false)
     private BigDecimal valor;
 
-    @Column(nullable = false, unique = true)
-    private String codigoPagamento;
+    @Embedded
+    @AttributeOverride(name = "codigo_pagamento",
+            column = @Column(name = "codigo_pagamento", nullable = false, unique = true))
+    private CodigoPagamento codigoPagamento;
 
     @Column(nullable = false)
     private OffsetDateTime dataHora;
@@ -36,7 +39,7 @@ public class Pagamento {
         return valor;
     }
 
-    public String getCodigoPagamento() {
+    public CodigoPagamento getCodigoPagamento() {
         return codigoPagamento;
     }
 
@@ -52,7 +55,7 @@ public class Pagamento {
         this.valor = valor;
     }
 
-    public void setCodigoPagamento(String codigoPagamento) {
+    public void setCodigoPagamento(CodigoPagamento codigoPagamento) {
         this.codigoPagamento = codigoPagamento;
     }
     public void setDataHora(OffsetDateTime dataHora) {
