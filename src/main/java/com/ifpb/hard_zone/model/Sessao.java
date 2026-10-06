@@ -19,10 +19,6 @@ public class Sessao {
     @JoinColumn(name = "computador_id")
     private Computador computador;
 
-    @ManyToOne
-    @JoinColumn(name = "jogo_id")
-    private Jogo jogo;
-
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precoPorHora;
 
@@ -56,14 +52,6 @@ public class Sessao {
 
     public void setComputador(Computador computador) {
         this.computador = computador;
-    }
-
-    public Jogo getJogo() {
-        return jogo;
-    }
-
-    public void setJogo(Jogo jogo) {
-        this.jogo = jogo;
     }
 
     public BigDecimal getPrecoPorHora() {

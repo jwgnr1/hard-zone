@@ -1,12 +1,13 @@
 package com.ifpb.hard_zone.service;
 
+import com.ifpb.hard_zone.exception.RegraDeNegocioException;
 import com.ifpb.hard_zone.exception.SessaoJaEncerradaException;
 import com.ifpb.hard_zone.exception.SessaoNaoEncontradaException;
 import com.ifpb.hard_zone.model.Computador;
-import com.ifpb.hard_zone.model.Jogo;
 import com.ifpb.hard_zone.model.Sessao;
 import com.ifpb.hard_zone.model.Usuario;
 import com.ifpb.hard_zone.repository.SessaoRepository;
+import com.ifpb.hard_zone.util.enumerate.StatusComputador;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,20 +18,27 @@ import java.util.List;
 public class SessaoService {
 
     private final SessaoRepository repository = new SessaoRepository();
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final ComputadorService computadorService = new ComputadorService();
 
-    public void iniciarSessao(
-            Usuario usuario,
-            Computador computador,
-            Jogo jogo,
-            BigDecimal precoPorHora) {
+    public void iniciarSessao(Long usuarioID, Long computadorID, BigDecimal precoPorHora)
+            throws Exception {
+
+        validarPrecoPorHora(precoPorHora);
+
+        Usuario usuario = validarUsuario(usuarioID);
+        Computador computador = validarComputador(computadorID);
+
+        validarDisponibilidade(computador);
 
         Sessao sessao = new Sessao();
-
         sessao.setUsuario(usuario);
         sessao.setComputador(computador);
-        sessao.setJogo(jogo);
         sessao.setPrecoPorHora(precoPorHora);
         sessao.setDataInicio(LocalDateTime.now());
+
+        computador.setStatus(StatusComputador.OCUPADO);
+        computadorService.atualizar(computador.getId(), computador);
 
         repository.salvar(sessao);
     }
@@ -38,9 +46,7 @@ public class SessaoService {
     public Sessao buscarPorId(Long id) {
         return repository.buscarPorId(id)
                 .orElseThrow(() ->
-                        new SessaoNaoEncontradaException(
-                                "Sessão não encontrada com o ID: " + id
-                        ));
+                        new SessaoNaoEncontradaException("Sessão não encontrada com o ID: " + id));
     }
 
     public List<Sessao> listarSessoes() {
@@ -56,9 +62,7 @@ public class SessaoService {
         Sessao sessao = buscarPorId(id);
 
         if (sessao.getDataFim() != null) {
-            throw new SessaoJaEncerradaException(
-                    "A sessão já foi encerrada."
-            );
+            throw new SessaoJaEncerradaException("A sessão já foi encerrada.");
         }
 
         sessao.setDataFim(LocalDateTime.now());
@@ -85,4 +89,42 @@ public class SessaoService {
 
         return repository.atualizar(sessao);
     }
+
+
+    private Usuario validarUsuario(Long usuarioID) throws Exception {
+
+        if (usuarioID == null) {
+            throw new RegraDeNegocioException("Usuário não pode ser nulo.");
+        }
+
+        return usuarioService.buscarUsuarioPorId(usuarioID);
+    }
+
+    private Computador validarComputador(Long computadorID) throws RegraDeNegocioException {
+
+        if (computadorID == null) {
+            throw new RegraDeNegocioException("Computador não pode ser nulo.");
+        }
+
+        return computadorService.buscarPorId(computadorID);
+    }
+
+    private void validarDisponibilidade(Computador computador) throws RegraDeNegocioException {
+
+        if (computador.getStatus() != StatusComputador.DISPONIVEL) {
+            throw new RegraDeNegocioException(
+                    "O computador " + computador.getNumeroMaquina() + " não está disponível.");
+        }
+    }
+
+    private void validarPrecoPorHora(BigDecimal precoPorHora) throws RegraDeNegocioException {
+        if (precoPorHora == null) {
+            throw new RegraDeNegocioException("Preço por hora não pode ser nulo.");
+        }
+
+        if (precoPorHora.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RegraDeNegocioException("Preço por hora deve ser maior que zero.");
+        }
+    }
+
 }
