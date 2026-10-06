@@ -123,17 +123,43 @@ public class Validator {
     }
 
 
-    public static Date criarDate(String data) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setLenient(false);
-        return  sdf.parse(data);
+    public static Date criarDate(String data) throws DataInvalidaException {
+
+        if(data == null || data.isBlank()) {
+            throw new DataInvalidaException("Data inválida!, data não pode ser nulo ou vazio.");
+        }
+
+        if (!data.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            throw new DataInvalidaException("Data inválida! Informe no formato dd/MM/yyyy.");
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setLenient(false);
+            return sdf.parse(data);
+
+        } catch (ParseException e) {
+            throw new DataInvalidaException("Data não existe! Verifique o dia e o mês informados.");        }
 
     }
 
-    public static Date criarDateTime(String data) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        sdf.setLenient(false);
-        return sdf.parse(data);
+    public static Date criarDateTime(String data) throws DataInvalidaException {
+
+        if(data == null || data.isBlank()) {
+            throw new DataInvalidaException("Data inválida!, data não pode ser nulo ou vazio.");
+        }
+
+        try {
+
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            sdf.setLenient(false);
+            return sdf.parse(data);
+
+        } catch (ParseException e) {
+            throw new DataInvalidaException(
+                    "Data/hora inválida! Informe no formato dd/MM/yyyy HH:mm.%n " +
+                            "Exemplo: 05/10/2026 14:30:00");        }
     }
 
     public static boolean isValorValido(BigDecimal valor){

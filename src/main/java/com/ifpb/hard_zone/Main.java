@@ -3,305 +3,950 @@ package com.ifpb.hard_zone;
 import com.ifpb.hard_zone.controller.UsuarioController;
 import com.ifpb.hard_zone.model.Usuario;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final UsuarioController usuarioController = new UsuarioController();
+
+    private static final UsuarioController controller =
+            new UsuarioController();
+
+    private static final String TAG =
+            "teste" + System.currentTimeMillis();
+
+    private static String emailA;
+    private static String emailB;
+
+    private static Long idA;
+    private static Long idB;
+
+    private static int ok = 0;
+    private static int falhas = 0;
 
     public static void main(String[] args) {
 
-        int opcao;
+        System.out.println("==============================================");
+        System.out.println("       TESTE RÁPIDO - USUARIOCONTROLLER");
+        System.out.println("==============================================");
+        System.out.println("TAG: " + TAG);
 
-        do {
-            exibirMenu();
-            opcao = lerInteiro("Escolha uma opção: ");
+        try {
 
-            switch (opcao) {
+            preparar();
 
-                case 1 -> cadastrarUsuario();
+            testarCadastro();
 
-                case 2 -> buscarUsuarioPorId();
+            testarBuscas();
 
-                case 3 -> atualizarUsuario();
+            testarDatas();
 
-                case 4 -> desativarUsuario();
+            testarStatus();
 
-                case 5 -> ativarUsuario();
+            testarAtualizacao();
 
-                case 6 -> buscarUsuarioPorNome();
+            testarExclusao();
 
-                case 7 -> buscarUsuarioPorEmail();
+        } catch (Throwable e) {
 
-                case 8 -> listarTodosUsuarios();
+            falha(
+                    "ERRO GERAL",
+                    e.getClass().getSimpleName()
+                            + ": "
+                            + e.getMessage()
+            );
 
-                case 9 -> listarUsuariosAtivos();
+        } finally {
 
-                case 10 -> listarUsuariosDesativados();
+            limpar();
 
-                case 11 -> listarUsuariosPorDataCadastro();
+            System.out.println();
+            System.out.println("==============================================");
+            System.out.println("                 RESUMO");
+            System.out.println("==============================================");
+            System.out.println("OK:     " + ok);
+            System.out.println("FALHAS: " + falhas);
 
-                case 12 -> filtrarPorNome();
-
-                case 13 -> filtrarPorPeriodo();
-
-                case 14 -> excluirUsuario();
-
-                case 0 -> System.out.println("Programa encerrado.");
-
-                default -> System.out.println("Opção inválida.");
+            if (falhas == 0) {
+                System.out.println("TODOS OS TESTES PASSARAM!");
+            } else {
+                System.out.println("EXISTEM FALHAS PARA ANALISAR.");
             }
 
-        } while (opcao != 0);
-
-        scanner.close();
+            System.out.println("==============================================");
+        }
     }
 
-    private static void exibirMenu() {
+// =========================================================
+// PREPARAÇÃO
+// =========================================================
 
-        System.out.println("\n========== MENU USUÁRIOS ==========");
-        System.out.println("1  - Cadastrar usuário");
-        System.out.println("2  - Buscar usuário por ID");
-        System.out.println("3  - Atualizar usuário");
-        System.out.println("4  - Desativar usuário");
-        System.out.println("5  - Ativar usuário");
-        System.out.println("6  - Buscar usuário por nome");
-        System.out.println("7  - Buscar usuário por e-mail");
-        System.out.println("8  - Listar todos os usuários");
-        System.out.println("9  - Listar usuários ativos");
-        System.out.println("10 - Listar usuários desativados");
-        System.out.println("11 - Buscar por data de cadastro");
-        System.out.println("12 - Filtrar por nome");
-        System.out.println("13 - Filtrar por período de cadastro");
-        System.out.println("14 - Excluir usuário permanentemente");
-        System.out.println("0  - Sair");
-        System.out.println("===================================");
-    }
+    private static void preparar() {
 
-    private static void cadastrarUsuario() {
+        secao("PREPARAÇÃO");
 
-        System.out.println("\n--- Cadastro de usuário ---");
+        emailA = email("alice");
+        emailB = email("bruno");
 
-        String nome = lerTexto("Nome: ");
-        String dataNascimento = lerTexto("Data de nascimento (dd/MM/yyyy): ");
-        String email = lerTexto("E-mail: ");
+        String resultadoA =
+                controller.cadastrarUsuario(
+                        "Alice",
+                        "15/05/2000",
+                        emailA
+                );
 
-        String resultado = usuarioController.cadastrarUsuario(
-                nome,
-                dataNascimento,
-                email
+        sucesso(
+                "Cadastrar usuário A",
+                resultadoA
         );
 
-        System.out.println(resultado);
-    }
+        String resultadoB =
+                controller.cadastrarUsuario(
+                        "Bruno",
+                        "20/08/1999",
+                        emailB
+                );
 
-    private static void buscarUsuarioPorId() {
-
-        System.out.println("\n--- Buscar usuário por ID ---");
-
-        Long id = lerLong("ID: ");
-
-        Usuario usuario = usuarioController.buscarUsuarioPorId(id);
-
-        exibirUsuario(usuario);
-    }
-
-    private static void atualizarUsuario() {
-
-        System.out.println("\n--- Atualizar usuário ---");
-
-        Long id = lerLong("ID: ");
-        String nome = lerTexto("Novo nome: ");
-        String email = lerTexto("Novo e-mail: ");
-
-        String resultado = usuarioController.atualizarDadosUsuario(
-                id,
-                nome,
-                email
+        sucesso(
+                "Cadastrar usuário B",
+                resultadoB
         );
 
-        System.out.println(resultado);
-    }
+        Usuario a =
+                controller.buscarUsuarioPorEmail(emailA);
 
-    private static void desativarUsuario() {
+        Usuario b =
+                controller.buscarUsuarioPorEmail(emailB);
 
-        System.out.println("\n--- Desativar usuário ---");
+        if (a == null || b == null) {
 
-        Long id = lerLong("ID: ");
+            falha(
+                    "Preparação",
+                    "Não foi possível recuperar A ou B"
+            );
 
-        String resultado = usuarioController.desativarUsuario(id);
-
-        System.out.println(resultado);
-    }
-
-    private static void ativarUsuario() {
-
-        System.out.println("\n--- Ativar usuário ---");
-
-        Long id = lerLong("ID: ");
-
-        String resultado = usuarioController.ativarUsuario(id);
-
-        System.out.println(resultado);
-    }
-
-    private static void buscarUsuarioPorNome() {
-
-        System.out.println("\n--- Buscar usuário por nome ---");
-
-        String nome = lerTexto("Nome: ");
-
-        List<Usuario> usuarios = usuarioController.buscarUsuarioPorNome(nome);
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void buscarUsuarioPorEmail() {
-
-        System.out.println("\n--- Buscar usuário por e-mail ---");
-
-        String email = lerTexto("E-mail: ");
-
-        Usuario usuario = usuarioController.buscarUsuarioPorEmail(email);
-
-        exibirUsuario(usuario);
-    }
-
-    private static void listarTodosUsuarios() {
-
-        System.out.println("\n--- Todos os usuários ---");
-
-        List<Usuario> usuarios = usuarioController.listarTodosUsuarios();
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void listarUsuariosAtivos() {
-
-        System.out.println("\n--- Usuários ativos ---");
-
-        List<Usuario> usuarios = usuarioController.listarTodosUsuariosAtivos();
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void listarUsuariosDesativados() {
-
-        System.out.println("\n--- Usuários desativados ---");
-
-        List<Usuario> usuarios = usuarioController.listarTodosUsuariosDesativados();
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void listarUsuariosPorDataCadastro() {
-
-        System.out.println("\n--- Buscar por data de cadastro ---");
-
-        String data = lerTexto("Data (dd/MM/yyyy HH:mm): ");
-
-        List<Usuario> usuarios =
-                usuarioController.listarUsuariosPorDataCadastro(data);
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void filtrarPorNome() {
-
-        System.out.println("\n--- Filtrar por nome ---");
-
-        String nome = lerTexto("Nome ou parte do nome: ");
-
-        List<Usuario> usuarios =
-                usuarioController.filtrarPorNomeUsuario(nome);
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void filtrarPorPeriodo() {
-
-        System.out.println("\n--- Filtrar por período ---");
-
-        String inicio = lerTexto("Data inicial (dd/MM/yyyy HH:mm): ");
-        String fim = lerTexto("Data final (dd/MM/yyyy HH:mm): ");
-
-        List<Usuario> usuarios =
-                usuarioController.filtrarUsuariosPorPeriodo(inicio, fim);
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void excluirUsuario() {
-
-        System.out.println("\n--- Excluir usuário permanentemente ---");
-
-        Long id = lerLong("ID: ");
-
-        String resultado =
-                usuarioController.excluirUsuarioPermanente(id);
-
-        System.out.println(resultado);
-    }
-
-    private static void exibirUsuario(Usuario usuario) {
-
-        if (usuario == null) {
             return;
         }
 
-        System.out.println("\n----- USUÁRIO -----");
-        System.out.println("ID: " + usuario.getId());
-        System.out.println("Nome: " + usuario.getNome());
-        System.out.println("Data de nascimento: " + usuario.getDataNascimento());
-        System.out.println("E-mail: " + usuario.getEmail());
-        System.out.println("Data de cadastro: " + usuario.getDataCadastro());
-        System.out.println("Ativo: " + usuario.isAtivo());
-        System.out.println("-------------------");
+        idA = a.getId();
+        idB = b.getId();
+
+        ok(
+                "Usuários A e B foram encontrados"
+        );
     }
 
-    private static void exibirUsuarios(List<Usuario> usuarios) {
+// =========================================================
+// CADASTRO
+// =========================================================
 
-        if (usuarios == null || usuarios.isEmpty()) {
-            System.out.println("Nenhum usuário encontrado.");
+    private static void testarCadastro() {
+
+        secao("CADASTRO");
+
+        // -------------------------
+        // DEVE FUNCIONAR
+        // -------------------------
+
+        sucesso(
+                "Nome válido",
+                controller.cadastrarUsuario(
+                        "Carlos",
+                        "10/10/2000",
+                        email("carlos")
+                )
+        );
+
+        sucesso(
+                "Nome com acento",
+                controller.cadastrarUsuario(
+                        "José da Silva",
+                        "01/01/2001",
+                        email("jose")
+                )
+        );
+
+        // -------------------------
+        // NÃO DEVE FUNCIONAR
+        // -------------------------
+
+        erro(
+                "Nome null",
+                controller.cadastrarUsuario(
+                        null,
+                        "10/10/2000",
+                        email("nullnome")
+                )
+        );
+
+        erro(
+                "Nome vazio",
+                controller.cadastrarUsuario(
+                        "",
+                        "10/10/2000",
+                        email("vazio")
+                )
+        );
+
+        erro(
+                "Nome com números",
+                controller.cadastrarUsuario(
+                        "Joao123",
+                        "10/10/2000",
+                        email("numero")
+                )
+        );
+
+        erro(
+                "Nome com caracteres especiais",
+                controller.cadastrarUsuario(
+                        "Joao@Silva",
+                        "10/10/2000",
+                        email("especial")
+                )
+        );
+
+        erro(
+                "Email null",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "10/10/2000",
+                        null
+                )
+        );
+
+        erro(
+                "Email vazio",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "10/10/2000",
+                        ""
+                )
+        );
+
+        erro(
+                "Email sem @",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "10/10/2000",
+                        "teste.com"
+                )
+        );
+
+        erro(
+                "Email duplicado",
+                controller.cadastrarUsuario(
+                        "Outro",
+                        "10/10/2000",
+                        emailA
+                )
+        );
+
+        erro(
+                "Data null",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        null,
+                        email("datanull")
+                )
+        );
+
+        erro(
+                "Data vazia",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "",
+                        email("data-vazia")
+                )
+        );
+
+        erro(
+                "Data impossível",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "31/02/2026",
+                        email("data-impossivel")
+                )
+        );
+
+        erro(
+                "Data no futuro",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "15/05/2999",
+                        email("datafuturo")
+                )
+        );
+
+        erro(
+                "Formato de data errado",
+                controller.cadastrarUsuario(
+                        "Teste",
+                        "2000-05-15",
+                        email("dataformato")
+                )
+        );
+    }
+
+// =========================================================
+// BUSCAS
+// =========================================================
+
+    private static void testarBuscas() {
+
+        secao("BUSCAS");
+
+        // -------------------------
+        // ID
+        // -------------------------
+
+        Usuario a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "Buscar A por ID",
+                a != null && idA.equals(a.getId())
+        );
+
+        erro(
+                "Buscar ID null",
+                controller.buscarUsuarioPorId(null)
+        );
+
+        erro(
+                "Buscar ID inexistente",
+                controller.buscarUsuarioPorId(999999999L)
+        );
+
+        // -------------------------
+        // NOME
+        // -------------------------
+
+        List<Usuario> porNome =
+                controller.buscarUsuarioPorNome("Alice");
+
+        check(
+                "Buscar por nome",
+                porNome != null
+                        && contemId(porNome, idA)
+        );
+
+        erro(
+                "Buscar nome null",
+                controller.buscarUsuarioPorNome(null)
+        );
+
+        erro(
+                "Buscar nome vazio",
+                controller.buscarUsuarioPorNome("")
+        );
+
+        // -------------------------
+        // EMAIL
+        // -------------------------
+
+        Usuario porEmail =
+                controller.buscarUsuarioPorEmail(emailA);
+
+        check(
+                "Buscar por email",
+                porEmail != null
+                        && idA.equals(porEmail.getId())
+        );
+
+        erro(
+                "Buscar email null",
+                controller.buscarUsuarioPorEmail(null)
+        );
+
+        erro(
+                "Buscar email inexistente",
+                controller.buscarUsuarioPorEmail(
+                        "naoexiste@test.com"
+                )
+        );
+
+        // -------------------------
+        // FILTRO
+        // -------------------------
+
+        List<Usuario> filtro =
+                controller.filtrarPorNomeUsuario("Alice");
+
+        check(
+                "Filtrar por nome",
+                filtro != null
+                        && contemId(filtro, idA)
+        );
+    }
+
+// =========================================================
+// DATAS
+// =========================================================
+
+    private static void testarDatas() {
+
+        secao("DATAS");
+
+        Usuario a =
+                controller.buscarUsuarioPorId(idA);
+
+        if (a == null || a.getDataCadastro() == null) {
+
+            falha(
+                    "Data de cadastro",
+                    "A não possui data de cadastro"
+            );
+
             return;
+        }
+
+        String dataCadastro =
+                new SimpleDateFormat(
+                        "dd/MM/yyyy HH:mm:ss"
+                ).format(
+                        a.getDataCadastro()
+                );
+
+        List<Usuario> encontrados =
+                controller.listarUsuariosPorDataCadastro(
+                        dataCadastro
+                );
+
+        check(
+                "Buscar pela data de cadastro",
+                encontrados != null
+                        && contemId(encontrados, idA)
+        );
+
+        // -------------------------
+        // DATAS INVÁLIDAS
+        // -------------------------
+
+        erro(
+                "Data de cadastro null",
+                controller.listarUsuariosPorDataCadastro(null)
+        );
+
+        erro(
+                "Data de cadastro vazia",
+                controller.listarUsuariosPorDataCadastro("")
+        );
+
+        erro(
+                "Data sem horário",
+                controller.listarUsuariosPorDataCadastro(
+                        "29/09/2026"
+                )
+        );
+
+        erro(
+                "Data impossível",
+                controller.listarUsuariosPorDataCadastro(
+                        "31/02/2026 10:00:00"
+                )
+        );
+
+        erro(
+                "Hora impossível",
+                controller.listarUsuariosPorDataCadastro(
+                        "29/09/2026 25:00:00"
+                )
+        );
+
+        // -------------------------
+        // PERÍODO
+        // -------------------------
+
+        List<Usuario> periodo =
+                controller.filtrarUsuariosPorPeriodo(
+                        "01/01/2020 00:00:00",
+                        "31/12/2030 23:59:59"
+                );
+
+        check(
+                "Filtrar por período válido",
+                periodo != null
+                        && contemId(periodo, idA)
+        );
+
+        erroPeriodo(
+                "Período invertido",
+                "31/12/2030 00:00:00",
+                "01/01/2020 00:00:00"
+        );
+
+        erroPeriodo(
+                "Período com data inválida",
+                "31/02/2026 00:00:00",
+                "31/03/2026 00:00:00"
+        );
+
+        erroPeriodo(
+                "Período sem horário",
+                "01/01/2020",
+                "31/12/2030"
+        );
+    }
+
+// =========================================================
+// ATIVAR / DESATIVAR
+// =========================================================
+
+    private static void testarStatus() {
+
+        secao("ATIVAR / DESATIVAR");
+
+        Usuario a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "Usuário começa ativo",
+                a != null && a.isAtivo()
+        );
+
+        sucesso(
+                "Desativar A",
+                controller.desativarUsuario(idA)
+        );
+
+        a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "A ficou desativado",
+                a != null && !a.isAtivo()
+        );
+
+        List<Usuario> desativados =
+                controller.listarTodosUsuariosDesativados();
+
+        check(
+                "A aparece nos desativados",
+                desativados != null
+                        && contemId(desativados, idA)
+        );
+
+        sucesso(
+                "Ativar A",
+                controller.ativarUsuario(idA)
+        );
+
+        a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "A voltou a ficar ativo",
+                a != null && a.isAtivo()
+        );
+
+        List<Usuario> ativos =
+                controller.listarTodosUsuariosAtivos();
+
+        check(
+                "A aparece nos ativos",
+                ativos != null
+                        && contemId(ativos, idA)
+        );
+
+        // -------------------------
+        // IDs INVÁLIDOS
+        // -------------------------
+
+        erro(
+                "Desativar ID null",
+                controller.desativarUsuario(null)
+        );
+
+        erro(
+                "Ativar ID null",
+                controller.ativarUsuario(null)
+        );
+
+        erro(
+                "Desativar ID inexistente",
+                controller.desativarUsuario(999999999L)
+        );
+
+        erro(
+                "Ativar ID inexistente",
+                controller.ativarUsuario(999999999L)
+        );
+    }
+
+// =========================================================
+// ATUALIZAÇÃO
+// =========================================================
+
+    private static void testarAtualizacao() {
+
+        secao("ATUALIZAÇÃO");
+
+        String novoNome =
+                "Alice Atualizada";
+
+        String novoEmail =
+                email("alice-atualizada");
+
+        sucesso(
+                "Atualizar A",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        novoNome,
+                        novoEmail
+                )
+        );
+
+        Usuario a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "Nome foi atualizado",
+                a != null
+                        && novoNome.equals(a.getNome())
+        );
+
+        check(
+                "Email foi atualizado",
+                a != null
+                        && novoEmail.equalsIgnoreCase(
+                        a.getEmail()
+                )
+        );
+
+        // -------------------------
+        // NÃO DEVE FUNCIONAR
+        // -------------------------
+
+        erro(
+                "Atualizar ID null",
+                controller.atualizarDadosUsuario(
+                        null,
+                        "Teste",
+                        email("x")
+                )
+        );
+
+        erro(
+                "Atualizar ID inexistente",
+                controller.atualizarDadosUsuario(
+                        999999999L,
+                        "Teste",
+                        email("x")
+                )
+        );
+
+        erro(
+                "Atualizar nome null",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        null,
+                        novoEmail
+                )
+        );
+
+        erro(
+                "Atualizar nome vazio",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        "",
+                        novoEmail
+                )
+        );
+
+        erro(
+                "Atualizar nome com número",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        "Alice123",
+                        novoEmail
+                )
+        );
+
+        erro(
+                "Atualizar email inválido",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        novoNome,
+                        "emailinvalido"
+                )
+        );
+
+        erro(
+                "Atualizar usando email de B",
+                controller.atualizarDadosUsuario(
+                        idA,
+                        novoNome,
+                        emailB
+                )
+        );
+
+        // Verificar atomicidade
+        a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "Falha não alterou os dados de A",
+                a != null
+                        && novoNome.equals(a.getNome())
+                        && novoEmail.equalsIgnoreCase(
+                        a.getEmail()
+                )
+        );
+    }
+
+// =========================================================
+// EXCLUSÃO
+// =========================================================
+
+    private static void testarExclusao() {
+
+        secao("EXCLUSÃO");
+
+        erro(
+                "Excluir ID null",
+                controller.excluirUsuarioPermanente(null)
+        );
+
+        erro(
+                "Excluir ID inexistente",
+                controller.excluirUsuarioPermanente(
+                        999999999L
+                )
+        );
+
+        sucesso(
+                "Excluir A",
+                controller.excluirUsuarioPermanente(idA)
+        );
+
+        Usuario a =
+                controller.buscarUsuarioPorId(idA);
+
+        check(
+                "A não existe após exclusão",
+                a == null
+        );
+
+        Usuario emailExcluido =
+                controller.buscarUsuarioPorEmail(
+                        email("alice-atualizada")
+                );
+
+        check(
+                "Email de A não existe após exclusão",
+                emailExcluido == null
+        );
+
+        // B deve continuar existindo
+        Usuario b =
+                controller.buscarUsuarioPorId(idB);
+
+        check(
+                "Excluir A não afetou B",
+                b != null && idB.equals(b.getId())
+        );
+    }
+
+// =========================================================
+// LIMPEZA
+// =========================================================
+
+    private static void limpar() {
+
+        secao("LIMPEZA");
+
+        List<Usuario> usuarios =
+                controller.listarTodosUsuarios();
+
+        if (usuarios == null) {
+            return;
+        }
+
+        int removidos = 0;
+
+        for (Usuario usuario : usuarios) {
+
+            String email =
+                    usuario.getEmail();
+
+            if (email != null
+                    && email.contains(TAG)) {
+
+                try {
+
+                    controller.excluirUsuarioPermanente(
+                            usuario.getId()
+                    );
+
+                    removidos++;
+
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        System.out.println(
+                "Registros de teste removidos: "
+                        + removidos
+        );
+    }
+
+// =========================================================
+// MÉTODOS AUXILIARES
+// =========================================================
+
+    private static String email(String nome) {
+
+        return nome
+                + "."
+                + TAG
+                + "@teste.com";
+    }
+
+    private static boolean contemId(
+            List<Usuario> usuarios,
+            Long id
+    ) {
+
+        if (usuarios == null || id == null) {
+            return false;
         }
 
         for (Usuario usuario : usuarios) {
-            exibirUsuario(usuario);
-        }
-    }
 
-    private static String lerTexto(String mensagem) {
+            if (usuario != null
+                    && id.equals(usuario.getId())) {
 
-        System.out.print(mensagem);
-        return scanner.nextLine();
-    }
-
-    private static Long lerLong(String mensagem) {
-
-        while (true) {
-            try {
-                System.out.print(mensagem);
-                return Long.parseLong(scanner.nextLine());
-
-            } catch (NumberFormatException e) {
-                System.out.println("Digite um número válido.");
+                return true;
             }
         }
+
+        return false;
     }
 
-    private static int lerInteiro(String mensagem) {
+    private static void sucesso(
+            String descricao,
+            String resultado
+    ) {
 
-        while (true) {
-            try {
-                System.out.print(mensagem);
-                return Integer.parseInt(scanner.nextLine());
+        if (resultado != null
+                && resultado
+                .toLowerCase()
+                .contains("sucesso")) {
 
-            } catch (NumberFormatException e) {
-                System.out.println("Digite uma opção válida.");
-            }
+            ok(descricao);
+
+        } else {
+
+            falha(
+                    descricao,
+                    "deveria funcionar, mas retornou: "
+                            + resultado
+            );
         }
     }
+
+    private static void erro(
+            String descricao,
+            Object resultado
+    ) {
+
+        if (resultado == null) {
+
+            ok(descricao);
+
+            return;
+        }
+
+        if (resultado instanceof String
+                && !((String) resultado)
+                .toLowerCase()
+                .contains("sucesso")) {
+
+            ok(descricao);
+
+        } else {
+
+            falha(
+                    descricao,
+                    "aceitou algo que deveria rejeitar: "
+                            + resultado
+            );
+        }
+    }
+
+    private static void erroPeriodo(
+            String descricao,
+            String inicio,
+            String fim
+    ) {
+
+        Object resultado =
+                controller.filtrarUsuariosPorPeriodo(
+                        inicio,
+                        fim
+                );
+
+        erro(
+                descricao,
+                resultado
+        );
+    }
+
+    private static void check(
+            String descricao,
+            boolean condicao
+    ) {
+
+        if (condicao) {
+
+            ok(descricao);
+
+        } else {
+
+            falha(
+                    descricao,
+                    "condição não atendida"
+            );
+        }
+    }
+
+    private static void ok(
+            String descricao
+    ) {
+
+        ok++;
+
+        System.out.println(
+                "[OK]    " + descricao
+        );
+    }
+
+    private static void falha(
+            String descricao,
+            String motivo
+    ) {
+
+        falhas++;
+
+        System.out.println(
+                "[FALHA] "
+                        + descricao
+                        + " -> "
+                        + motivo
+        );
+    }
+
+    private static void secao(
+            String nome
+    ) {
+
+        System.out.println();
+        System.out.println(
+                "--- " + nome + " ---"
+        );
+    }
+
+
 }
