@@ -79,7 +79,6 @@ public class Formatador {
         return p.getCodigoPagamento() == null ? "-" : p.getCodigoPagamento().getCodigoGerado();
     }
 
-    // Pagamento.sessao é LAZY: se o proxy não puder ser lido fora da transação, mostra "?"
     private static String idDaSessao(Pagamento p) {
         try {
             return p.getSessao() == null ? "-" : String.valueOf(p.getSessao().getId());

@@ -36,7 +36,6 @@ public class MenuJogo {
         } while (opcao != 0);
     }
 
-    // Também usado pelo MenuComputador
     public static void imprimirJogos() {
         seguro(() -> mostrarLista(jogoController.listar(),
                 "Nenhum jogo cadastrado.", Formatador::formatarJogo));

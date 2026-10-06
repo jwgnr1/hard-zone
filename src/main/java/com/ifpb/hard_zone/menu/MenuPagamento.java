@@ -57,8 +57,6 @@ public class MenuPagamento {
         gerarPagamentoDaSessao(sessaoId);
     }
 
-    // Também usado pelo MenuSessao, logo depois de encerrar uma sessão.
-    // O valor vem da própria sessão (calculado ao encerrar) e o código é gerado pelo CodigoPagamento.
     public static void gerarPagamentoDaSessao(long sessaoId) {
         seguro(() -> {
             Sessao sessao = sessaoController.buscarPorId(sessaoId);

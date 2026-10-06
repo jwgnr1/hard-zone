@@ -45,7 +45,6 @@ public class MenuComputador {
         } while (opcao != 0);
     }
 
-    // Também usado pelo MenuSessao
     public static void imprimirComputadores() {
         seguro(() -> mostrarLista(computadorController.listar(),
                 "Nenhum computador cadastrado.", Formatador::formatarComputador));

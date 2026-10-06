@@ -7,7 +7,6 @@ import static com.ifpb.hard_zone.menu.Formatador.*;
 
 public class MenuUsuario {
 
-    // Só serve de dica na tela. Ajuste para o formato que o UsuarioService espera.
     private static final String DICA_DATA_USUARIO = "dd/MM/yyyy";
 
     private static final UsuarioController usuarioController = new UsuarioController();

@@ -92,7 +92,6 @@ public class Console {
         return scanner.nextLine().trim().equalsIgnoreCase("s");
     }
 
-    // ---------- datas para filtros de período ----------
 
     public static OffsetDateTime inicioDoDia(LocalDate data) {
         return data.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
