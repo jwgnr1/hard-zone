@@ -11,13 +11,13 @@ public class ComputadorController {
 
     private final ComputadorService computadorService = new ComputadorService();
 
-    public String cadastrar(Integer numeroMaquina, String especificacoes) {
+    public String adicionar(Integer numeroMaquina, String especificacoes) {
         return ControllerExecutor.executar(() -> {
             Computador computador = new Computador();
             computador.setNumeroMaquina(numeroMaquina);
             computador.setEspecificacoes(especificacoes);
             computadorService.adicionarComputador(computador);
-        }, "Computador cadastrado com sucesso!");
+        }, "Computador adicionado com sucesso!");
     }
 
     public String alterarStatus(Long id, StatusComputador status) {
@@ -26,10 +26,24 @@ public class ComputadorController {
                 "Status alterado!");
     }
 
+    public String atualizar(Long id, Integer numeroMaquina, String especificacoes, String status) {
+        return ControllerExecutor.executar(() -> {
+            Computador dados = new Computador();
+            dados.setNumeroMaquina(numeroMaquina);
+            dados.setEspecificacoes(especificacoes);
+            dados.setStatus(StatusComputador.deTexto(status));
+            computadorService.atualizar(id, dados);
+        }, "Computador atualizado!");
+    }
+
     public String remover(Long id) {
         return ControllerExecutor.executar(
                 () -> computadorService.removerComputador(id),
                 "Computador removido!");
+    }
+
+    public Computador buscarPorNumeroMaquina(Integer numeroMaquina) {
+        return computadorService.buscarPorNumeroMaquina(numeroMaquina);
     }
 
     public String adicionarJogo(Long computadorId, Long jogoId) {

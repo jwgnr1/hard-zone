@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class JogoRepository extends RepositoryBase<Jogo, Long>{
 
@@ -32,6 +33,22 @@ public class JogoRepository extends RepositoryBase<Jogo, Long>{
             em.remove(jogo);
             return null;
         });
+    }
+
+    public List<Jogo> buscarPorNome(String nome) {
+        return consultar(em -> em.createQuery(
+                        "select j from Jogo j where lower(j.nome) like lower(:nome) order by j.nome",
+                        Jogo.class)
+                .setParameter("nome", "%" + nome.trim() + "%")
+                .getResultList());
+    }
+
+    public boolean existePorNome(String nome) {
+        return consultar(em -> em.createQuery(
+                        "select count(j) from Jogo j where lower(j.nome) = lower(:nome)",
+                        Long.class)
+                .setParameter("nome", nome.trim())
+                .getSingleResult() > 0);
     }
 
 }

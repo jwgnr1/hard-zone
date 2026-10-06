@@ -20,6 +20,28 @@ public class JogoService {
         return jogo;
     }
 
+    public Jogo atualizar(Long id, Jogo dados) {
+        if (dados == null) {
+            throw new RegraDeNegocioException("Os dados do jogo não podem ser nulos");
+        }
+        if (dados.getNome() == null || dados.getNome().isBlank()) {
+            throw new RegraDeNegocioException("O nome do jogo é obrigatório");
+        }
+
+        Jogo existente = buscarPorId(id);
+
+        boolean nomeMudou = !dados.getNome().trim().equalsIgnoreCase(existente.getNome());
+        if (nomeMudou && jogoRepository.existePorNome(dados.getNome())) {
+            throw new RegraDeNegocioException(
+                    "Já existe um jogo com o nome " + dados.getNome().trim());
+        }
+
+        existente.setNome(dados.getNome().trim());
+        existente.setFaixaEtaria(dados.getFaixaEtaria());
+
+        return jogoRepository.atualizar(existente);
+    }
+
     public void remover(Long id) {
         exigirId(id);
         jogoRepository.remover(id);
@@ -30,6 +52,13 @@ public class JogoService {
         return jogoRepository.buscarPorId(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Jogo não encontrado com id " + id));
+    }
+
+    public List<Jogo> buscarPorNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new RegraDeNegocioException("Informe o nome do jogo para a busca");
+        }
+        return jogoRepository.buscarPorNome(nome);
     }
 
     public List<Jogo> listarTodos() {

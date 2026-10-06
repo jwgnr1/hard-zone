@@ -36,6 +36,15 @@ public class ComputadorService {
                         "Computador não encontrado com id " + id));
     }
 
+    public Computador buscarPorNumeroMaquina(Integer numeroMaquina) {
+        if (numeroMaquina == null || numeroMaquina <= 0) {
+            throw new RegraDeNegocioException("O número da máquina deve ser um inteiro positivo");
+        }
+        return computadorRepository.buscarPorNumeroMaquina(numeroMaquina)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Computador não encontrado com o número " + numeroMaquina));
+    }
+
     public Computador atualizar(Long id, Computador dados) {
         validar(dados);
         Computador existente = buscarPorId(id);

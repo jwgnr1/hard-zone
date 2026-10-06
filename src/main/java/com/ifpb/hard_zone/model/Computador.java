@@ -27,7 +27,7 @@ public class Computador {
     private Integer numeroMaquina;
 
     @Enumerated(EnumType.STRING)
-    private StatusComputador status;
+    private StatusComputador status = StatusComputador.DISPONIVEL;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
