@@ -6,10 +6,19 @@ import jakarta.persistence.Persistence;
 
 public class JPAUtil {
 
-    private static final EntityManagerFactory FACTORY =
+    private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory("hardzone-pu");
 
+    private JPAUtil() {
+    }
+
     public static EntityManager getEntityManager() {
-        return FACTORY.createEntityManager();
+        return emf.createEntityManager();
+    }
+
+    public static void fechar() {
+        if (emf.isOpen()) {
+            emf.close();
+        }
     }
 }

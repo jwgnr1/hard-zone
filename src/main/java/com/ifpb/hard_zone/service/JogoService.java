@@ -15,7 +15,16 @@ public class JogoService {
         if (jogo == null) {
             throw new RegraDeNegocioException("O jogo não pode ser nulo");
         }
-
+        if (jogo.getNome() == null || jogo.getNome().isBlank()) {
+            throw new RegraDeNegocioException("O nome do jogo é obrigatório");
+        }
+        if (jogo.getFaixaEtaria() < 0) {
+            throw new RegraDeNegocioException("A faixa etária não pode ser negativa");
+        }
+        jogo.setNome(jogo.getNome().trim());
+        if (jogoRepository.existePorNome(jogo.getNome())) {
+            throw new RegraDeNegocioException("Já existe um jogo com o nome " + jogo.getNome());
+        }
         jogoRepository.salvar(jogo);
         return jogo;
     }

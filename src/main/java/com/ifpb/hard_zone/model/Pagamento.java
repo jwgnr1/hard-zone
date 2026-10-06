@@ -18,7 +18,7 @@ public class Pagamento {
     private BigDecimal valor;
 
     @Embedded
-    @AttributeOverride(name = "codigo_pagamento",
+    @AttributeOverride(name = "codigo",
             column = @Column(name = "codigo_pagamento", nullable = false, unique = true))
     private CodigoPagamento codigoPagamento;
 

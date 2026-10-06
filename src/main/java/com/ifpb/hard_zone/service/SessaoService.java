@@ -87,7 +87,9 @@ public class SessaoService {
                 valor.setScale(2, RoundingMode.HALF_UP)
         );
 
-        return repository.atualizar(sessao);
+        Sessao encerrada = repository.atualizar(sessao);
+        computadorService.alterarStatus(sessao.getComputador().getId(), StatusComputador.DISPONIVEL);
+        return encerrada;
     }
 
 
