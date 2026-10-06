@@ -20,9 +20,9 @@ public class ComputadorController {
         }, "Computador adicionado com sucesso!");
     }
 
-    public String alterarStatus(Long id, StatusComputador status) {
+    public String alterarStatus(Long id, String status) {
         return ControllerExecutor.executar(
-                () -> computadorService.alterarStatus(id, status),
+                () -> computadorService.alterarStatus(id, StatusComputador.deTexto(status)),
                 "Status alterado!");
     }
 
