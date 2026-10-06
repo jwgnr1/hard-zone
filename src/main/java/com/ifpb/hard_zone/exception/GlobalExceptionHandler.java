@@ -1,6 +1,9 @@
 package com.ifpb.hard_zone.exception;
 
 import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
+import com.ifpb.hard_zone.exception.usuariosExceptions.DadosUsuarioInvalidoException;
+import com.ifpb.hard_zone.exception.usuariosExceptions.UsuarioNaoEncontradoException;
+import com.ifpb.hard_zone.exception.usuariosExceptions.UsuarioStatusInvalidoException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
 
@@ -9,7 +12,10 @@ public class GlobalExceptionHandler {
     public static String tratar(Throwable e) {
         if (e instanceof RegraDeNegocioException
                 || e instanceof EntityNotFoundException
-                || e instanceof DataInvalidaException) {
+                || e instanceof DataInvalidaException
+                || e instanceof DadosUsuarioInvalidoException
+                || e instanceof UsuarioNaoEncontradoException
+                || e instanceof UsuarioStatusInvalidoException) {
             return e.getMessage();
         }
         if (e instanceof PersistenceException) {
