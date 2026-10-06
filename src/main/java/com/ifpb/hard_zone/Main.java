@@ -13,230 +13,194 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String opcao;
+        int opcao;
 
         do {
             exibirMenu();
-            opcao = scanner.nextLine();
+            opcao = lerInteiro("Escolha uma opção: ");
 
             switch (opcao) {
 
-                case "1":
-                    cadastrarUsuario();
-                    break;
+                case 1 -> cadastrarUsuario();
 
-                case "2":
-                    buscarUsuarioPorId();
-                    break;
+                case 2 -> buscarUsuarioPorId();
 
-                case "3":
-                    atualizarUsuario();
-                    break;
+                case 3 -> atualizarUsuario();
 
-                case "4":
-                    buscarUsuarioPorNome();
-                    break;
+                case 4 -> desativarUsuario();
 
-                case "5":
-                    buscarUsuarioPorEmail();
-                    break;
+                case 5 -> ativarUsuario();
 
-                case "6":
-                    listarTodosUsuarios();
-                    break;
+                case 6 -> buscarUsuarioPorNome();
 
-                case "7":
-                    filtrarUsuariosPorNome();
-                    break;
+                case 7 -> buscarUsuarioPorEmail();
 
-                case "8":
-                    filtrarUsuariosPorPeriodo();
-                    break;
+                case 8 -> listarTodosUsuarios();
 
-                case "9":
-                    listarUsuarioPorDataCadastro();
-                    break;
+                case 9 -> listarUsuariosAtivos();
 
-                case "10":
-                    listarUsuariosAtivos();
-                    break;
+                case 10 -> listarUsuariosDesativados();
 
-                case "11":
-                    listarUsuariosDesativados();
-                    break;
+                case 11 -> listarUsuariosPorDataCadastro();
 
-                case "12":
-                    desativarUsuario();
-                    break;
+                case 12 -> filtrarPorNome();
 
-                case "13":
-                    ativarUsuario();
-                    break;
+                case 13 -> filtrarPorPeriodo();
 
-                case "14":
-                    excluirUsuario();
-                    break;
+                case 14 -> excluirUsuario();
 
-                case "0":
-                    System.out.println("Saindo do sistema...");
-                    break;
+                case 0 -> System.out.println("Programa encerrado.");
 
-                default:
-                    System.out.println("Opção inválida.");
+                default -> System.out.println("Opção inválida.");
             }
 
-            if (!opcao.equals("0")) {
-                System.out.println("\nPressione ENTER para continuar...");
-                scanner.nextLine();
-            }
-
-        } while (!opcao.equals("0"));
+        } while (opcao != 0);
 
         scanner.close();
     }
 
     private static void exibirMenu() {
-        System.out.println("\n========================================");
-        System.out.println("          SISTEMA DE USUÁRIOS");
-        System.out.println("========================================");
+
+        System.out.println("\n========== MENU USUÁRIOS ==========");
         System.out.println("1  - Cadastrar usuário");
         System.out.println("2  - Buscar usuário por ID");
         System.out.println("3  - Atualizar usuário");
-        System.out.println("4  - Buscar usuário por nome");
-        System.out.println("5  - Buscar usuário por email");
-        System.out.println("6  - Listar todos os usuários");
-        System.out.println("7  - Filtrar usuários por nome");
-        System.out.println("8  - Filtrar usuários por período");
-        System.out.println("9  - Buscar por data de cadastro");
-        System.out.println("10 - Listar usuários ativos");
-        System.out.println("11 - Listar usuários desativados");
-        System.out.println("12 - Desativar usuário");
-        System.out.println("13 - Ativar usuário");
+        System.out.println("4  - Desativar usuário");
+        System.out.println("5  - Ativar usuário");
+        System.out.println("6  - Buscar usuário por nome");
+        System.out.println("7  - Buscar usuário por e-mail");
+        System.out.println("8  - Listar todos os usuários");
+        System.out.println("9  - Listar usuários ativos");
+        System.out.println("10 - Listar usuários desativados");
+        System.out.println("11 - Buscar por data de cadastro");
+        System.out.println("12 - Filtrar por nome");
+        System.out.println("13 - Filtrar por período de cadastro");
         System.out.println("14 - Excluir usuário permanentemente");
         System.out.println("0  - Sair");
-        System.out.println("========================================");
-        System.out.print("Escolha uma opção: ");
+        System.out.println("===================================");
     }
 
     private static void cadastrarUsuario() {
 
-        System.out.println("\n--- CADASTRAR USUÁRIO ---");
+        System.out.println("\n--- Cadastro de usuário ---");
 
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+        String nome = lerTexto("Nome: ");
+        String dataNascimento = lerTexto("Data de nascimento (dd/MM/yyyy): ");
+        String email = lerTexto("E-mail: ");
 
-        System.out.print("Data de nascimento (dd/MM/yyyy): ");
-        String dataNascimento = scanner.nextLine();
+        String resultado = usuarioController.cadastrarUsuario(
+                nome,
+                dataNascimento,
+                email
+        );
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
-
-        usuarioController.cadastrarUsuario(nome, dataNascimento, email);
+        System.out.println(resultado);
     }
 
     private static void buscarUsuarioPorId() {
 
-        System.out.println("\n--- BUSCAR USUÁRIO POR ID ---");
+        System.out.println("\n--- Buscar usuário por ID ---");
 
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
+        Long id = lerLong("ID: ");
 
         Usuario usuario = usuarioController.buscarUsuarioPorId(id);
 
-        if (usuario != null) {
-            exibirUsuario(usuario);
-        }
+        exibirUsuario(usuario);
     }
 
     private static void atualizarUsuario() {
 
-        System.out.println("\n--- ATUALIZAR USUÁRIO ---");
+        System.out.println("\n--- Atualizar usuário ---");
 
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
+        Long id = lerLong("ID: ");
+        String nome = lerTexto("Novo nome: ");
+        String email = lerTexto("Novo e-mail: ");
 
-        System.out.print("Novo nome: ");
-        String nome = scanner.nextLine();
+        String resultado = usuarioController.atualizarDadosUsuario(
+                id,
+                nome,
+                email
+        );
 
-        System.out.print("Novo email: ");
-        String email = scanner.nextLine();
+        System.out.println(resultado);
+    }
 
-        usuarioController.atualizarDadosUsuario(id, nome, email);
+    private static void desativarUsuario() {
+
+        System.out.println("\n--- Desativar usuário ---");
+
+        Long id = lerLong("ID: ");
+
+        String resultado = usuarioController.desativarUsuario(id);
+
+        System.out.println(resultado);
+    }
+
+    private static void ativarUsuario() {
+
+        System.out.println("\n--- Ativar usuário ---");
+
+        Long id = lerLong("ID: ");
+
+        String resultado = usuarioController.ativarUsuario(id);
+
+        System.out.println(resultado);
     }
 
     private static void buscarUsuarioPorNome() {
 
-        System.out.println("\n--- BUSCAR USUÁRIO POR NOME ---");
+        System.out.println("\n--- Buscar usuário por nome ---");
 
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+        String nome = lerTexto("Nome: ");
 
-        List<Usuario> usuarios =
-                usuarioController.buscarUsuarioPorNome(nome);
+        List<Usuario> usuarios = usuarioController.buscarUsuarioPorNome(nome);
 
         exibirUsuarios(usuarios);
     }
 
     private static void buscarUsuarioPorEmail() {
 
-        System.out.println("\n--- BUSCAR USUÁRIO POR EMAIL ---");
+        System.out.println("\n--- Buscar usuário por e-mail ---");
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
+        String email = lerTexto("E-mail: ");
 
-        Usuario usuario =
-                usuarioController.buscarUsuarioPorEmail(email);
+        Usuario usuario = usuarioController.buscarUsuarioPorEmail(email);
 
-        if (usuario != null) {
-            exibirUsuario(usuario);
-        }
+        exibirUsuario(usuario);
     }
 
     private static void listarTodosUsuarios() {
 
-        System.out.println("\n--- TODOS OS USUÁRIOS ---");
+        System.out.println("\n--- Todos os usuários ---");
 
-        List<Usuario> usuarios =
-                usuarioController.listarTodosUsuarios();
-
-        exibirUsuarios(usuarios);
-    }
-
-    private static void filtrarUsuariosPorNome() {
-
-        System.out.println("\n--- FILTRAR USUÁRIOS POR NOME ---");
-
-        System.out.print("Nome ou parte do nome: ");
-        String nome = scanner.nextLine();
-
-        List<Usuario> usuarios =
-                usuarioController.filtrarPorNomeUsuario(nome);
+        List<Usuario> usuarios = usuarioController.listarTodosUsuarios();
 
         exibirUsuarios(usuarios);
     }
 
-    private static void filtrarUsuariosPorPeriodo() {
+    private static void listarUsuariosAtivos() {
 
-        System.out.println("\n--- FILTRAR POR PERÍODO ---");
+        System.out.println("\n--- Usuários ativos ---");
 
-        System.out.print("Data inicial (dd/MM/yyyy HH:mm:ss): ");
-        String inicio = scanner.nextLine();
-
-        System.out.print("Data final (dd/MM/yyyy HH:mm:ss): ");
-        String fim = scanner.nextLine();
-
-        List<Usuario> usuarios =
-                usuarioController.filtrarUsuariosPorPeriodo(inicio, fim);
+        List<Usuario> usuarios = usuarioController.listarTodosUsuariosAtivos();
 
         exibirUsuarios(usuarios);
     }
 
-    private static void listarUsuarioPorDataCadastro() {
+    private static void listarUsuariosDesativados() {
 
-        System.out.println("\n--- BUSCAR POR DATA DE CADASTRO ---");
+        System.out.println("\n--- Usuários desativados ---");
 
-        System.out.print("Data (dd/MM/yyyy HH:mm:ss): ");
-        String data = scanner.nextLine();
+        List<Usuario> usuarios = usuarioController.listarTodosUsuariosDesativados();
+
+        exibirUsuarios(usuarios);
+    }
+
+    private static void listarUsuariosPorDataCadastro() {
+
+        System.out.println("\n--- Buscar por data de cadastro ---");
+
+        String data = lerTexto("Data (dd/MM/yyyy HH:mm): ");
 
         List<Usuario> usuarios =
                 usuarioController.listarUsuariosPorDataCadastro(data);
@@ -244,84 +208,100 @@ public class Main {
         exibirUsuarios(usuarios);
     }
 
-    private static void listarUsuariosAtivos() {
+    private static void filtrarPorNome() {
 
-        System.out.println("\n--- USUÁRIOS ATIVOS ---");
+        System.out.println("\n--- Filtrar por nome ---");
+
+        String nome = lerTexto("Nome ou parte do nome: ");
 
         List<Usuario> usuarios =
-                usuarioController.listarTodosUsuariosAtivos();
+                usuarioController.filtrarPorNomeUsuario(nome);
 
         exibirUsuarios(usuarios);
     }
 
-    private static void listarUsuariosDesativados() {
+    private static void filtrarPorPeriodo() {
 
-        System.out.println("\n--- USUÁRIOS DESATIVADOS ---");
+        System.out.println("\n--- Filtrar por período ---");
+
+        String inicio = lerTexto("Data inicial (dd/MM/yyyy HH:mm): ");
+        String fim = lerTexto("Data final (dd/MM/yyyy HH:mm): ");
 
         List<Usuario> usuarios =
-                usuarioController.listarTodosUsuariosDesativados();
+                usuarioController.filtrarUsuariosPorPeriodo(inicio, fim);
 
         exibirUsuarios(usuarios);
-    }
-
-    private static void desativarUsuario() {
-
-        System.out.println("\n--- DESATIVAR USUÁRIO ---");
-
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
-
-        usuarioController.desativarUsuario(id);
-    }
-
-    private static void ativarUsuario() {
-
-        System.out.println("\n--- ATIVAR USUÁRIO ---");
-
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
-
-        usuarioController.ativarUsuario(id);
     }
 
     private static void excluirUsuario() {
 
-        System.out.println("\n--- EXCLUIR USUÁRIO PERMANENTEMENTE ---");
+        System.out.println("\n--- Excluir usuário permanentemente ---");
 
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
+        Long id = lerLong("ID: ");
 
-        Usuario usuario =
+        String resultado =
                 usuarioController.excluirUsuarioPermanente(id);
 
-        if (usuario != null) {
-            System.out.println("Usuário removido:");
-            exibirUsuario(usuario);
-        }
-    }
-
-    private static void exibirUsuarios(List<Usuario> usuarios) {
-
-        if (usuarios.isEmpty()) {
-            System.out.println("Nenhum usuário encontrado.");
-            return;
-        }
-
-        System.out.println("\nQuantidade encontrada: " + usuarios.size());
-
-        for (Usuario usuario : usuarios) {
-            exibirUsuario(usuario);
-            System.out.println("----------------------------------------");
-        }
+        System.out.println(resultado);
     }
 
     private static void exibirUsuario(Usuario usuario) {
 
-        System.out.println("\nID: " + usuario.getId());
+        if (usuario == null) {
+            return;
+        }
+
+        System.out.println("\n----- USUÁRIO -----");
+        System.out.println("ID: " + usuario.getId());
         System.out.println("Nome: " + usuario.getNome());
         System.out.println("Data de nascimento: " + usuario.getDataNascimento());
-        System.out.println("Email: " + usuario.getEmail());
+        System.out.println("E-mail: " + usuario.getEmail());
         System.out.println("Data de cadastro: " + usuario.getDataCadastro());
         System.out.println("Ativo: " + usuario.isAtivo());
+        System.out.println("-------------------");
+    }
+
+    private static void exibirUsuarios(List<Usuario> usuarios) {
+
+        if (usuarios == null || usuarios.isEmpty()) {
+            System.out.println("Nenhum usuário encontrado.");
+            return;
+        }
+
+        for (Usuario usuario : usuarios) {
+            exibirUsuario(usuario);
+        }
+    }
+
+    private static String lerTexto(String mensagem) {
+
+        System.out.print(mensagem);
+        return scanner.nextLine();
+    }
+
+    private static Long lerLong(String mensagem) {
+
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                return Long.parseLong(scanner.nextLine());
+
+            } catch (NumberFormatException e) {
+                System.out.println("Digite um número válido.");
+            }
+        }
+    }
+
+    private static int lerInteiro(String mensagem) {
+
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                return Integer.parseInt(scanner.nextLine());
+
+            } catch (NumberFormatException e) {
+                System.out.println("Digite uma opção válida.");
+            }
+        }
     }
 }

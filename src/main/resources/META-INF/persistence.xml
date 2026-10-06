@@ -21,7 +21,7 @@
                       value="hardzone"/>
 
             <property name="jakarta.persistence.jdbc.password"
-                      value="suasenha"/>
+                      value="Nunes2006"/>
 
             <property name="hibernate.hbm2ddl.auto"
                       value="update"/>
