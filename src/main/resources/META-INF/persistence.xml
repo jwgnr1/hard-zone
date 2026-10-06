@@ -18,10 +18,10 @@
                       value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
 
             <property name="jakarta.persistence.jdbc.user"
-                      value="hardzone"/>
+                      value="seu banco"/>
 
             <property name="jakarta.persistence.jdbc.password"
-                      value="Nunes2006"/>
+                      value="sua senha"/>
 
             <property name="hibernate.hbm2ddl.auto"
                       value="update"/>

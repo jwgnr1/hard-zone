@@ -17,7 +17,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
 
-    public void salvarUsuario(String nome, String dataNascimento, String email) throws DadosUsuarioInvalidoException, ParseException {
+    public void salvarUsuario(String nome, String dataNascimento, String email) throws DadosUsuarioInvalidoException, DataInvalidaException {
 
         Usuario novoUsuario = criarUsuario(nome, dataNascimento, email);
 
@@ -53,15 +53,18 @@ public class UsuarioService {
         usuarioRepository.atualizar(usuarioAtualizar);
     }
 
-    public Usuario buscarUsuarioPorId(Long id) throws UsuarioNaoEncontradoException {
+    public Usuario buscarUsuarioPorId(Long id) throws UsuarioNaoEncontradoException, DadosUsuarioInvalidoException {
 
+        if (id == null) {
+            throw new DadosUsuarioInvalidoException("ID não pode ser nulo.");
+        }
         Optional<Usuario> usuario = usuarioRepository.buscarPorId(id);
 
 
         return usuario.orElseThrow(() -> new UsuarioNaoEncontradoException(String.format("Usuário não encontrado com o ID: %s.", id)));
     }
 
-    public void desativarUsuario(Long id) throws UsuarioNaoEncontradoException, UsuarioStatusInvalidoException {
+    public void desativarUsuario(Long id) throws UsuarioNaoEncontradoException, UsuarioStatusInvalidoException, DadosUsuarioInvalidoException {
 
         Usuario usuario = buscarUsuarioPorId(id);
 
@@ -74,7 +77,7 @@ public class UsuarioService {
         usuarioRepository.atualizar(usuario);
     }
 
-    public void ativarUsuario(Long id) throws UsuarioNaoEncontradoException, UsuarioStatusInvalidoException {
+    public void ativarUsuario(Long id) throws UsuarioNaoEncontradoException, UsuarioStatusInvalidoException, DadosUsuarioInvalidoException {
 
         Usuario usuario = buscarUsuarioPorId(id);
 
@@ -153,7 +156,7 @@ public class UsuarioService {
         return usuarioRepository.buscarUsuariosDesativos();
     }
 
-    public Usuario excluirUsuarioPermanentemente(Long id) throws UsuarioNaoEncontradoException {
+    public Usuario excluirUsuarioPermanentemente(Long id) throws UsuarioNaoEncontradoException, DadosUsuarioInvalidoException {
 
         Usuario usuario = buscarUsuarioPorId(id);
 
@@ -161,13 +164,14 @@ public class UsuarioService {
     }
 
     private Usuario criarUsuario(String nome, String dataNascimento, String email) throws DadosUsuarioInvalidoException,
-            ParseException {
+            DataInvalidaException {
 
         Date dataNascimentoFormatada = Validator.criarDate(dataNascimento);
+        validarDadosUsuario(nome, dataNascimentoFormatada, email);
+
 
         String emailNormalizado = email.trim().toLowerCase();
 
-        validarDadosUsuario(nome, dataNascimentoFormatada, emailNormalizado);
 
         Usuario usuario = new Usuario();
 
