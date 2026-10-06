@@ -1,9 +1,6 @@
 package com.ifpb.hard_zone.controller;
 
 import com.ifpb.hard_zone.model.Sessao;
-import com.ifpb.hard_zone.model.Usuario;
-import com.ifpb.hard_zone.model.Computador;
-import com.ifpb.hard_zone.model.Jogo;
 import com.ifpb.hard_zone.service.SessaoService;
 
 import java.math.BigDecimal;
@@ -14,16 +11,14 @@ public class SessaoController {
     private final SessaoService sessaoService = new SessaoService();
 
     public String iniciarSessao(
-            Usuario usuario,
-            Computador computador,
-            Jogo jogo,
+            Long usuarioID,
+            Long computadorID,
             BigDecimal precoPorHora) {
 
         return ControllerExecutor.executar(
                 () -> sessaoService.iniciarSessao(
-                        usuario,
-                        computador,
-                        jogo,
+                        usuarioID,
+                        computadorID,
                         precoPorHora
                 ),
                 "Sessão iniciada com sucesso!"
