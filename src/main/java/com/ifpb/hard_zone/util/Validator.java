@@ -6,6 +6,7 @@ import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -23,9 +24,9 @@ public class Validator {
         if (data == null) {
             throw new DataInvalidaException("Data informada não pode ser nula.");
         }
-        /*if (data.after(new Date())) {
+        if (data.after(new Date())) {
             throw new DataInvalidaException("Data informada não pode estar no futuro.");
-        }*/
+        }
     }
 
     public static void validarDataNascimento(Date data) throws DadosUsuarioInvalidoException {
@@ -56,6 +57,15 @@ public class Validator {
         if (dataInicio.after(dataFim)) {
             throw new DataInvalidaException("Data de início não pode ser posterior à data de fim.");
         }
+    }
+
+    public static void validarPeriodo(OffsetDateTime dataInicio, OffsetDateTime dataFim)
+            throws DataInvalidaException {
+        validarPeriodo(paraDate(dataInicio), paraDate(dataFim));
+    }
+
+    private static Date paraDate(OffsetDateTime data) {
+        return data == null ? null : Date.from(data.toInstant());
     }
 
     public static void validarNome(String nome) throws DadosUsuarioInvalidoException {
@@ -129,8 +139,4 @@ public class Validator {
     public static boolean isValorValido(BigDecimal valor){
         return valor.compareTo(BigDecimal.ZERO) >= 0;
     }
-
-
-
-
 }
