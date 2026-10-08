@@ -15,7 +15,15 @@ import java.util.Optional;
 
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public UsuarioService() {
+        this(new UsuarioRepository());
+    }
 
     public void salvarUsuario(String nome, String dataNascimento, String email) throws DadosUsuarioInvalidoException, DataInvalidaException {
 

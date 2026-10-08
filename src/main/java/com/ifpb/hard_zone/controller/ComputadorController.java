@@ -9,7 +9,15 @@ import java.util.List;
 
 public class ComputadorController {
 
-    private final ComputadorService computadorService = new ComputadorService();
+    private final ComputadorService computadorService;
+
+    public ComputadorController(ComputadorService computadorService) {
+        this.computadorService = computadorService;
+    }
+
+    public ComputadorController() {
+        this(new ComputadorService());
+    }
 
     public String adicionar(Integer numeroMaquina, String especificacoes) {
         return ControllerExecutor.executar(() -> {

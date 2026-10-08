@@ -17,9 +17,21 @@ import java.util.List;
 
 public class SessaoService {
 
-    private final SessaoRepository repository = new SessaoRepository();
-    private final UsuarioService usuarioService = new UsuarioService();
-    private final ComputadorService computadorService = new ComputadorService();
+    private final SessaoRepository repository;
+    private final UsuarioService usuarioService;
+    private final ComputadorService computadorService;
+
+    public SessaoService(SessaoRepository repository, 
+                         UsuarioService usuarioService, 
+                         ComputadorService computadorService) {
+        this.repository = repository;
+        this.usuarioService = usuarioService;
+        this.computadorService = computadorService;
+    }
+
+    public SessaoService() {
+        this(new SessaoRepository(), new UsuarioService(), new ComputadorService());
+    }
 
     public void iniciarSessao(Long usuarioID, Long computadorID, BigDecimal precoPorHora)
             throws Exception {

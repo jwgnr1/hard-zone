@@ -8,7 +8,15 @@ import java.util.List;
 
 public class SessaoController {
 
-    private final SessaoService sessaoService = new SessaoService();
+    private final SessaoService sessaoService;
+
+    public SessaoController(SessaoService sessaoService) {
+        this.sessaoService = sessaoService;
+    }
+
+    public SessaoController() {
+        this(new SessaoService());
+    }
 
     public String iniciarSessao(
             Long usuarioID,

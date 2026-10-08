@@ -7,7 +7,15 @@ import java.util.List;
 
 public class JogoController {
 
-    private final JogoService jogoService = new JogoService();
+    private final JogoService jogoService;
+
+    public JogoController(JogoService jogoService) {
+        this.jogoService = jogoService;
+    }
+
+    public JogoController() {
+        this(new JogoService());
+    }
 
     public String adicionar(String nome, int faixaEtaria) {
         return ControllerExecutor.executar(() -> {

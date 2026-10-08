@@ -12,7 +12,15 @@ import java.util.List;
 
 public class PagamentoController {
 
-    private final PagamentoService service = new PagamentoService();
+    private final PagamentoService service;
+
+    public PagamentoController(PagamentoService service) {
+        this.service = service;
+    }
+
+    public PagamentoController() {
+        this(new PagamentoService());
+    }
 
 
     public String gerarPagamento(BigDecimal valor, CodigoPagamento codigoPagamento, OffsetDateTime dataHora, Sessao sessao){

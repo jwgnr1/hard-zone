@@ -12,7 +12,15 @@ import java.util.List;
 
 public class PagamentoService {
 
-    private final PagamentoRepository repository = new PagamentoRepository();
+    private final PagamentoRepository repository;
+
+    public PagamentoService(PagamentoRepository repository) {
+        this.repository = repository;
+    }
+
+    public PagamentoService() {
+        this(new PagamentoRepository());
+    }
 
     public Pagamento salvarPagamento(Pagamento pagamento){
         repository.salvar(pagamento);

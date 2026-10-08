@@ -7,7 +7,15 @@ import java.util.List;
 
 public class UsuarioController {
 
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    public UsuarioController() {
+        this(new UsuarioService());
+    }
 
     public String cadastrarUsuario(String nome, String dataNascimento, String email) {
         return ControllerExecutor.executar(() -> usuarioService.salvarUsuario(nome, dataNascimento, email)

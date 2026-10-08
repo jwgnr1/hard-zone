@@ -9,7 +9,15 @@ import java.util.List;
 
 public class JogoService {
 
-    private final JogoRepository jogoRepository = new JogoRepository();
+    private final JogoRepository jogoRepository;
+
+    public JogoService(JogoRepository jogoRepository) {
+        this.jogoRepository = jogoRepository;
+    }
+
+    public JogoService() {
+        this(new JogoRepository());
+    }
 
     public Jogo adicionar(Jogo jogo) {
         if (jogo == null) {

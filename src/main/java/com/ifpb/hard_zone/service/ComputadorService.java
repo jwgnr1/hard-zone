@@ -11,7 +11,15 @@ import java.util.List;
 
 public class ComputadorService {
 
-    private final ComputadorRepository computadorRepository = new ComputadorRepository();
+    private final ComputadorRepository computadorRepository;
+
+    public ComputadorService(ComputadorRepository computadorRepository) {
+        this.computadorRepository = computadorRepository;
+    }
+
+    public ComputadorService() {
+        this(new ComputadorRepository());
+    }
 
     public Computador adicionarComputador(Computador computador) {
         validar(computador);
