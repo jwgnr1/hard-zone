@@ -7,7 +7,8 @@ import java.util.Arrays;
 public enum StatusComputador {
     DISPONIVEL,
     OCUPADO,
-    MANUTENCAO;
+    MANUTENCAO,
+    FORA_DE_USO;
 
     public static StatusComputador deTexto(String texto) {
         if (texto == null || texto.isBlank()) {

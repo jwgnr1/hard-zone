@@ -1,17 +1,12 @@
 package com.ifpb.hard_zone.repository;
 
 import com.ifpb.hard_zone.model.Jogo;
-import com.ifpb.hard_zone.util.JPAUtil;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JogoRepository extends RepositoryBase<Jogo, Long>{
-
-
-    private final EntityManager em = JPAUtil.getEntityManager();
 
     public JogoRepository() {super(Jogo.class);}
 

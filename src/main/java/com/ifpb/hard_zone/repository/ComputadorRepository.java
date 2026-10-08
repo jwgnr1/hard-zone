@@ -2,23 +2,19 @@ package com.ifpb.hard_zone.repository;
 
 import com.ifpb.hard_zone.model.Computador;
 import com.ifpb.hard_zone.model.Jogo;
-import com.ifpb.hard_zone.util.JPAUtil;
-import jakarta.persistence.EntityManager;
+import com.ifpb.hard_zone.util.enumerate.StatusComputador;
 import jakarta.persistence.EntityNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ComputadorRepository extends RepositoryBase<Computador, Long>{
 
-    private final EntityManager em = JPAUtil.getEntityManager();
-
     public ComputadorRepository() {super(Computador.class);}
 
     public boolean existePorNumeroMaquina(Integer numeroMaquina) {
         return consultar(em -> em.createQuery(
-                        "select count(c) from Computador c where c.numeroMaquina = :n",
+                        "select count(c) from Computador c where c.numeroMaquina = :n and c.ativo = true",
                         Long.class)
                 .setParameter("n", numeroMaquina)
                 .getSingleResult() > 0);
@@ -26,12 +22,19 @@ public class ComputadorRepository extends RepositoryBase<Computador, Long>{
 
     public Optional<Computador> buscarPorNumeroMaquina(Integer numeroMaquina) {
         return consultar(em -> em.createQuery(
-                        "select c from Computador c where c.numeroMaquina = :n",
+                        "select c from Computador c where c.numeroMaquina = :n and c.ativo = true",
                         Computador.class)
                 .setParameter("n", numeroMaquina)
                 .getResultList()
                 .stream()
                 .findFirst());
+    }
+
+    @Override
+    public List<Computador> listarTodos() {
+        return consultar(em -> em.createQuery(
+                "SELECT c FROM Computador c WHERE c.ativo = true", Computador.class)
+                .getResultList());
     }
 
     @Override
@@ -46,9 +49,10 @@ public class ComputadorRepository extends RepositoryBase<Computador, Long>{
             if (computador == null) {
                 throw new EntityNotFoundException("Computador não encontrado com id " + id);
             }
-            // desfaz o vínculo dos dois lados antes de remover
-            new ArrayList<>(computador.getJogos()).forEach(computador::removerJogo);
-            em.remove(computador);
+            // Abordagem A: Soft Delete para preservar histórico de sessões
+            computador.setAtivo(false);
+            computador.setStatus(StatusComputador.FORA_DE_USO);
+            em.merge(computador);
             return null;
         });
     }
@@ -56,7 +60,7 @@ public class ComputadorRepository extends RepositoryBase<Computador, Long>{
     public Computador adicionarJogo(Long computadorId, Long jogoId) {
         return executarEmTransacao(em -> {
             Computador computador = em.find(Computador.class, computadorId);
-            if (computador == null) {
+            if (computador == null || !computador.isAtivo()) {
                 throw new EntityNotFoundException("Computador não encontrado com id " + computadorId);
             }
             Jogo jogo = em.find(Jogo.class, jogoId);
@@ -71,7 +75,7 @@ public class ComputadorRepository extends RepositoryBase<Computador, Long>{
     public Computador removerJogo(Long computadorId, Long jogoId) {
         return executarEmTransacao(em -> {
             Computador computador = em.find(Computador.class, computadorId);
-            if (computador == null) {
+            if (computador == null || !computador.isAtivo()) {
                 throw new EntityNotFoundException("Computador não encontrado com id " + computadorId);
             }
             Jogo jogo = em.find(Jogo.class, jogoId);
@@ -85,7 +89,7 @@ public class ComputadorRepository extends RepositoryBase<Computador, Long>{
 
     public List<Jogo> listarJogos(Long computadorId) {
         return consultar(em -> em.createQuery(
-                        "select j from Computador c join c.jogos j where c.id = :id",
+                        "select j from Computador c join c.jogos j where c.id = :id and c.ativo = true",
                         Jogo.class)
                 .setParameter("id", computadorId)
                 .getResultList());

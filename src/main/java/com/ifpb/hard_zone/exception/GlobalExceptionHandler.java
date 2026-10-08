@@ -1,5 +1,7 @@
 package com.ifpb.hard_zone.exception;
 
+import com.ifpb.hard_zone.exception.Pagamento.NenhumPagamentoRegistradoException;
+import com.ifpb.hard_zone.exception.Pagamento.PagamentoNaoEncontradoException;
 import com.ifpb.hard_zone.exception.dataException.DataInvalidaException;
 import com.ifpb.hard_zone.exception.usuariosExceptions.DadosUsuarioInvalidoException;
 import com.ifpb.hard_zone.exception.usuariosExceptions.UsuarioNaoEncontradoException;
@@ -15,7 +17,9 @@ public class GlobalExceptionHandler {
                 || e instanceof DataInvalidaException
                 || e instanceof DadosUsuarioInvalidoException
                 || e instanceof UsuarioNaoEncontradoException
-                || e instanceof UsuarioStatusInvalidoException) {
+                || e instanceof UsuarioStatusInvalidoException
+                || e instanceof NenhumPagamentoRegistradoException
+                || e instanceof PagamentoNaoEncontradoException) {
             return e.getMessage();
         }
         if (e instanceof PersistenceException) {

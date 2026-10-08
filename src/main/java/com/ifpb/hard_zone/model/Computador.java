@@ -23,11 +23,14 @@ public class Computador {
     @Column(nullable = false)
     private String especificacoes;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Integer numeroMaquina;
 
     @Enumerated(EnumType.STRING)
     private StatusComputador status = StatusComputador.DISPONIVEL;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -85,5 +88,13 @@ public class Computador {
 
     public void setJogos(List<Jogo> jogos) {
         this.jogos = jogos;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }
